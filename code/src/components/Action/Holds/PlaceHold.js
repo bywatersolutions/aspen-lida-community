@@ -114,6 +114,8 @@ export const PlaceHold = (props) => {
                />
           );
      } else {
+          // The hold can be placed without additional prompting to the user.
+          // See HoldPrompt.js for actions if a pickup location etc. is needed.
           return (
                <>
                     <Button
@@ -126,7 +128,10 @@ export const PlaceHold = (props) => {
                               setLoading(true);
                               await completeAction(record, type, user.id, null, null, pickupLocation, sublocation, library.baseUrl, null, 'default').then(async (ilsResponse) => {
                                    setResponse(ilsResponse);
+
                                    if (ilsResponse?.confirmationNeeded && ilsResponse.confirmationNeeded) {
+                                        message = ilsResponse.api.message ?? ilsResponse.message;
+                                        title = ilsResponse.api.title ?? ils.title;
                                         setHoldConfirmationResponse({
                                              message: ilsResponse.message,
                                              title: ilsResponse.title,
@@ -145,11 +150,19 @@ export const PlaceHold = (props) => {
                                              items: ilsResponse.items ?? [],
                                         });
                                    }
-                                   queryClient.invalidateQueries({ queryKey: ['holds', user.id, library.baseUrl, language] });
-                                   queryClient.invalidateQueries({ queryKey: ['user', library.baseUrl, language] });
-                                   /*await refreshProfile(library.baseUrl).then((result) => {
-							 updateUser(result);
-							 });*/
+
+                                   if (ilsResponse?.success === true || ilsResponse?.success === 'true') {
+                                        //Refresh the hold and user if the hold was successful
+                                        queryClient.invalidateQueries({ queryKey: ['holds', user.id, library.baseUrl, language] });
+                                        queryClient.invalidateQueries({ queryKey: ['user', library.baseUrl, language] });
+
+                                        const timeoutId = setTimeout(() => {
+                                             // Also refresh in 45 seconds for Sierra since hold can take a minute to show up on the account
+                                             queryClient.invalidateQueries({ queryKey: ['holds', user.id, library.baseUrl, language] });
+                                             queryClient.invalidateQueries({ queryKey: ['user', library.baseUrl, language] });
+                                        }, 45 * 1000);
+                                   }
+
                                    setLoading(false);
                                    if (ilsResponse?.confirmationNeeded && ilsResponse.confirmationNeeded) {
                                         setHoldConfirmationIsOpen(true);
