@@ -89,8 +89,14 @@ export const PlaceHold = (props) => {
      }else if (_.size(locations) > 1 && user.rememberHoldPickupLocation == 0) {
           logDebugMessage("Showing Hold Prompt due to having locations user.rememberHoldPickupLocation = " + user.rememberHoldPickupLocation);
           loadHoldPrompt = true;
-     }else if (promptForHoldNotifications || holdTypeForFormat === 'item' || holdTypeForFormat === 'either' || (shouldPromptAlternateLibraryCard && !userHasAlternateLibraryCard)){
-          logDebugMessage("Showing Hold Prompt due to prompt for hold notifications, hold type, or alternate library card");
+     }else if (promptForHoldNotifications) {
+          logDebugMessage("Showing Hold Prompt due to prompt for hold notifications");
+          loadHoldPrompt = true;
+     }else if ((holdTypeForFormat === 'item' || holdTypeForFormat === 'either') && _.isEmpty(volumeId)){
+          logDebugMessage("Showing Hold Prompt due to hold type");
+          loadHoldPrompt = true;
+     }else if (shouldPromptAlternateLibraryCard && !userHasAlternateLibraryCard) {
+          logDebugMessage("Showing Hold Prompt due to alternate library card");
           loadHoldPrompt = true;
      }
 
