@@ -57,6 +57,8 @@ import { deleteAllReadingHistory, deleteSelectedReadingHistory, fetchReadingHist
 import AddToList from '../../Search/AddToList';
 import { ActionsheetIcon } from '@gluestack-ui/themed';
 
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../../util/logging.js';
+
 const blurhash = 'MHPZ}tt7*0WC5S-;ayWBofj[K5RjM{ofM_';
 
 export const MyReadingHistory = () => {
@@ -98,7 +100,7 @@ export const MyReadingHistory = () => {
                     let tmp = getTermFromDictionary(language, 'page_of_page');
                     tmp = tmp.replace('%1%', page);
                     tmp = tmp.replace('%2%', data.totalPages);
-                    console.log(tmp);
+                    logDebugMessage(tmp);
                     setPaginationLabel(tmp);
                }
           },
@@ -192,7 +194,7 @@ export const MyReadingHistory = () => {
      };
 
      const updateSort = async (value) => {
-          console.log('updateSort: ' + value);
+          logDebugMessage('updateSort for reading history: ' + value);
           setLoading(true);
           setSort(value);
           await queryClient.invalidateQueries({ queryKey: ['reading_history', user.id, library.baseUrl, page, sort] });
@@ -201,7 +203,7 @@ export const MyReadingHistory = () => {
      };
 
      const updatePage = async (value) => {
-          console.log('updatePage: ' + value);
+          logDebugMessage('updatePage for reading history: ' + value);
           setLoading(true);
           setPage(value);
           await queryClient.invalidateQueries({ queryKey: ['reading_history', user.id, library.baseUrl, page, sort, searchTerm] });
@@ -212,7 +214,7 @@ export const MyReadingHistory = () => {
      const [searchTerm, setSearchTerm] = React.useState('');
 
      const search = async () => {
-          console.log('updateSearchTerm: ' + searchTerm);
+          logDebugMessage('updateSearchTerm for reading history: ' + searchTerm);
           setLoading(true);
           setSearchTerm(searchTerm);
           await queryClient.invalidateQueries({ queryKey: ['reading_history', user.id, library.baseUrl, page, sort, searchTerm] });
@@ -301,7 +303,7 @@ export const MyReadingHistory = () => {
                                             defaultValue={sort}
                                             accessibilityLabel={getTermFromDictionary(language, 'select_sort_method')}
                                             onValueChange={(itemValue) => updateSort(itemValue)}>
-                                             <SelectTrigger variant="outline" size="sm" borderWidth={colorMode === 'light' ? '$none' : '$1'}
+                                             <SelectTrigger variant="outline" size="sm" borderWidth={colorMode === 'light' ? 0 : 1}
                                                             borderColor={colorMode === 'light' ? '$none' : theme['colors']['gray']['400']}>
                                                   <SelectInput color={textColor} placeholder={getTermFromDictionary(language, 'select_sort_method')} />
                                                   <SelectIcon mr="$3">
@@ -388,7 +390,7 @@ export const MyReadingHistory = () => {
      const Empty = () => {
           return (
                <Center mt="$5" mb="$5">
-                    <Text bold fontSize="lg" color={textColor}>
+                    <Text bold fontSize="$lg" color={textColor}>
                          {getTermFromDictionary(language, 'reading_history_empty')}
                     </Text>
                </Center>
@@ -414,7 +416,7 @@ export const MyReadingHistory = () => {
                                         bgColor={theme['colors']['primary']['500']}
                                         onPress={async () => {
                                              if (!isPreviousData && data?.hasMore) {
-                                                  console.log('Adding to page');
+                                                  logDebugMessage('Adding to page');
                                                   let newPage = page + 1;
                                                   updatePage(newPage);
                                                   setLoading(true);
@@ -424,7 +426,7 @@ export const MyReadingHistory = () => {
                                                             let tmp = getTermFromDictionary(language, 'page_of_page');
                                                             tmp = tmp.replace('%1%', newPage);
                                                             tmp = tmp.replace('%2%', data.totalPages);
-                                                            console.log(tmp);
+                                                            logDebugMessage(tmp);
                                                             setPaginationLabel(tmp);
                                                        }
                                                        queryClient.setQueryData(['reading_history', user.id, library.baseUrl, page, sort], result);
@@ -438,7 +440,7 @@ export const MyReadingHistory = () => {
                                    </Button>
                               </ButtonGroup>
                          </ScrollView>
-                         <Text mt="$2" fontSize="sm" color={textColor}>
+                         <Text mt="$2" fontSize="$sm" color={textColor}>
                               {paginationLabel}
                          </Text>
                     </Box>
@@ -554,7 +556,7 @@ const Item = (data) => {
                          <ActionsheetContent>
                               <Box w="100%" h="$60" px="$4" justifyContent="center">
                                    <Text
-                                        fontSize="18"
+                                        fontSize={18}
                                         color={textColor}>
                                         {getTitle(item.title)}
                                    </Text>

@@ -264,10 +264,8 @@ export const MyList = () => {
                                    <Text
                                         color={textColor}
                                         bold
-                                        fontSize={{
-                                             base: 'md',
-                                             lg: 'lg',
-                                        }}>
+                                        fontSize="$md"
+                                        >
                                         {item.title}
                                    </Text>
                                    {item.start_date && item.end_date ? (
@@ -280,7 +278,7 @@ export const MyList = () => {
                                    ) : null}
                                    {registrationRequired ? (
                                         <HStack mt="$1" direction="row" space="sm" flexWrap="wrap">
-                                             <Badge key={0} colorScheme="secondary" mt={1} variant="outline" rounded="4px" _text={{ fontSize: 12 }}>
+                                             <Badge key={0} colorScheme="secondary" mt={1} variant="outline" rounded="4px" fontSize="$xs">
                                                   {getTermFromDictionary(language, 'registration_required')}
                                              </Badge>
                                         </HStack>
@@ -323,14 +321,12 @@ export const MyList = () => {
                               <Text
                                    color={textColor}
                                    bold
-                                   fontSize={{
-                                        base: 'sm',
-                                        lg: 'md',
-                                   }}>
+                                   fontSize="$sm"
+                                   >
                                    {item.title}
                               </Text>
                               {item.author ? (
-                                   <Text color={textColor} fontSize="xs">
+                                   <Text color={textColor} fontSize="$xs">
                                         {getTermFromDictionary(language, 'by')} {item.author}
                                    </Text>
                               ) : null}
@@ -367,7 +363,7 @@ export const MyList = () => {
                               </Button>
                          </ButtonGroup>
                     </ScrollView>
-                    <Text mt="$2" fontSize="sm" color={textColor}>
+                    <Text mt="$2" fontSize="$sm" color={textColor}>
                          {paginationLabel}
                     </Text>
                </Box>
@@ -401,7 +397,7 @@ export const MyList = () => {
                                         defaultValue={sort}
                                         accessibilityLabel={getTermFromDictionary(language, 'select_sort_method')}
                                         onValueChange={(itemValue) => setSort(itemValue)}>
-                                        <SelectTrigger variant="outline" size="sm" borderWidth={colorMode === 'light' ? '$none' : '$1'}
+                                        <SelectTrigger variant="outline" size="sm" borderWidth={colorMode === 'light' ? 0 : 1}
                                                        borderColor={colorMode === 'light' ? '$none' : theme['colors']['gray']['400']}>
                                              <SelectInput color={textColor} placeholder="Select option" />
                                              <SelectIcon mr="$3">
