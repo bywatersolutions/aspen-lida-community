@@ -67,11 +67,12 @@ export const MyReadingHistory = () => {
      const [isLoading, setLoading] = React.useState(false);
      const [page, setPage] = React.useState(1);
      const [sort, setSort] = React.useState('checkedOut');
+     const [searchTerm, setSearchTerm] = React.useState('');
+     const [filter, setFilter] = React.useState('');
      const { library } = React.useContext(LibrarySystemContext);
      const { language } = React.useContext(LanguageContext);
      const { user, updateUser, readingHistory, updateReadingHistory } = React.useContext(UserContext);
      const { systemMessages, updateSystemMessages } = React.useContext(SystemMessagesContext);
-     const url = library.baseUrl;
      const pageSize = 20;
      const systemMessagesForScreen = [];
      const [paginationLabel, setPaginationLabel] = React.useState('Page 1 of 1');
@@ -211,14 +212,12 @@ export const MyReadingHistory = () => {
           setLoading(false);
      };
 
-     const [searchTerm, setSearchTerm] = React.useState('');
-
      const search = async () => {
-          logDebugMessage('updateSearchTerm for reading history: ' + searchTerm);
+          logDebugMessage('updateSearchTerm for reading history: ' + filter);
           setLoading(true);
-          setSearchTerm(searchTerm);
+          setSearchTerm(filter);
           await queryClient.invalidateQueries({ queryKey: ['reading_history', user.id, library.baseUrl, page, sort, searchTerm] });
-          await queryClient.refetchQueries({ queryKey: ['reading_history', user.id, library.baseUrl, page, sort, searchTerm] });
+          await queryClient.refetchQueries({ queryKey: ['reading_history', user.id, library.baseUrl, page, sort, filter] });
           setLoading(false);
      }
 
@@ -292,7 +291,17 @@ export const MyReadingHistory = () => {
                     flexWrap="nowrap">
                     <VStack space="sm">
                          <Input>
-                              <InputField returnKeyType="search" variant="outline" autoCapitalize="none" onChangeText={(term) => setSearchTerm(term)} status="info" placeholder={getTermFromDictionary(language, 'search')} onSubmitEditing={search} value={searchTerm} size="lg" sx={{ color: textColor, borderColor: textColor, ':focus': { borderColor: textColor } }}/>
+                              <InputField
+                                   returnKeyType="search"
+                                   variant="outline"
+                                   autoCapitalize="none"
+                                   onChangeText={(term) => setFilter(term)}
+                                   inputMode="search"
+                                   value={filter}
+                                   placeholder={getTermFromDictionary(language, 'search')}
+                                   onSubmitEditing={search}
+                                   size="lg"
+                                   color={textColor} />
                          </Input>
                          <ScrollView horizontal>
                               <HStack space="sm">
