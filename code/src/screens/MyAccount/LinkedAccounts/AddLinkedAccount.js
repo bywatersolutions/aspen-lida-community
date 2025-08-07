@@ -78,7 +78,8 @@ const AddLinkedAccount = () => {
                                                       returnKeyType="next"
                                                       textContentType="username"
                                                       required
-                                                      size="$lg"
+                                                      size="lg"
+                                                      color={textColor}
                                                       onSubmitEditing={() => {
                                                            passwordRef.current.focus();
                                                       }}
@@ -91,7 +92,7 @@ const AddLinkedAccount = () => {
                                         <FormControlLabelText color={textColor}>{getTermFromDictionary(language, 'password')}</FormControlLabelText>
                                    </FormControlLabel>
                                    <Input>
-                                        <InputField onChangeText={(text) => setPassword(text)} value={password} autoCorrect={false}
+                                        <InputField onChangeText={(text) => setPassword(text)} value={password} color={textColor} autoCorrect={false}
                                                     autoCapitalize="none" id="password" returnKeyType="next"
                                                     textContentType="password" required size="$lg" type={showPassword ? 'text' : 'password'} ref={passwordRef}
                                         />
