@@ -1,33 +1,31 @@
 import { Checkbox, HStack, Pressable, Text } from 'native-base';
-import React, { Component } from 'react';
+import React from 'react';
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../../util/logging.js';
 
-export default class Facet_Checkbox extends Component {
-     render() {
-          const item = this.props.data;
-          if (item.count) {
-               return (
-                    <Pressable py={4} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-                         <HStack align="center" space={3}>
-                              <Checkbox value={item.value} accessibilityLabel={item.display}>
-                                   <Text _light={{ color: 'darkText' }} _dark={{ color: 'lightText' }}>
-                                        {item.display} ({item.count})
-                                   </Text>
-                              </Checkbox>
-                         </HStack>
-                    </Pressable>
-               );
-          } else {
-               return (
-                    <Pressable py={4} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-                         <HStack align="center" space={3}>
-                              <Checkbox value={item.value} accessibilityLabel={item.display}>
-                                   <Text _light={{ color: 'darkText' }} _dark={{ color: 'lightText' }}>
-                                        {item.display}
-                                   </Text>
-                              </Checkbox>
-                         </HStack>
-                    </Pressable>
-               );
-          }
-     }
+export default function Facet_Checkbox({ data, category, values = [], updateCheckboxFacet }) {
+     const isChecked = values.includes(data.value);
+     const handleChange = (newValue) => {
+          logDebugMessage("Clicked on " + data.value + " isChecked is " + isChecked + " newValue is " + newValue);
+          updateCheckboxFacet(category, data.value, newValue);
+     };
+
+     return (
+          <HStack alignItems="center" px={3} py={4}>
+               <Checkbox
+                    value={data.value}
+                    accessibilityLabel={data.display}
+                    isChecked={isChecked}
+                    onChange={(value)=>{
+                       handleChange(value);
+                    }}
+               >
+                    <Text
+                         _light={{ color: 'darkText' }}
+                         _dark={{ color: 'lightText' }}
+                    >
+                         {data.display}{data.count ? ` (${data.count})` : ''}
+                    </Text>
+               </Checkbox>
+          </HStack>
+     );
 }

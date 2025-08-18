@@ -79,8 +79,8 @@ export const MyNotificationHistory = () => {
           return (
                <>
                     {_.size(systemMessagesForScreen) > 0 ? <Box p="$2">{showSystemMessage()}</Box> : null}
-                    <Center flex={1}>
-                         <Heading pt="$5">{getTermFromDictionary(language, 'notification_history_empty')}</Heading>
+                    <Center flex={1} p="$5">
+                         <Heading pt="$5" color={textColor}>{getTermFromDictionary(language, 'notification_history_empty')}</Heading>
                     </Center>
                </>
           );
@@ -109,7 +109,7 @@ export const MyNotificationHistory = () => {
                                    </Button>
                               </ButtonGroup>
                          </ScrollView>
-                         <Text mt="$2" fontSize={10} color={textColor}>
+                         <Text mt="$2" fontSize="$2xs" color={textColor}>
                               {paginationLabel}
                          </Text>
                     </Box>
@@ -159,15 +159,15 @@ const Item = (data) => {
                     )}
                     <VStack width="86%">
                          {message.isRead === '0' ? (
-                              <Text bold color={textColor} sx={{ '@base': { fontSize: 14, lineHeight: 16 }, '@lg': { fontSize: 18, lineHeight: 22 } }}>
+                              <Text bold color={textColor} fontSize="$sm">
                                    {message.title}
                               </Text>
                          ) : (
-                              <Text color={textColor} sx={{ '@base': { fontSize: 14, lineHeight: 16 }, '@lg': { fontSize: 18, lineHeight: 22 } }}>
+                              <Text color={textColor} fontSize="$sm">
                                    {message.title}
                               </Text>
                          )}
-                         <Text color={textColor} sx={{ '@base': { fontSize: 12, lineHeight: 14 }, '@lg': { fontSize: 16, lineHeight: 20 } }}>
+                         <Text color={textColor} fontSize="$xs">
                               {content}
                          </Text>
                     </VStack>

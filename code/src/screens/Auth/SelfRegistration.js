@@ -11,7 +11,7 @@ import { ThemeContext } from '../../context/initialContext';
 import { ScrollView, Box, Button, ButtonGroup, ButtonText, FormControl, FormControlHelper, FormControlHelperText, Icon, Input, Text, Select, SelectTrigger, SelectInput, SelectIcon, ChevronDownIcon, SelectPortal, SelectBackdrop, SelectContent, SelectDragIndicatorWrapper, SelectDragIndicator, SelectItem, CheckIcon, FormControlLabel, FormControlLabelText, InputField } from '@gluestack-ui/themed';
 
 export const SelfRegistration = () => {
-	const {theme, textColor} = React.useContext(ThemeContext);
+	const {theme, textColor, colorMode} = React.useContext(ThemeContext);
 	const route = useRoute();
 	const navigation = useNavigation();
 	const libraryUrl = route?.params?.libraryUrl ?? '';
@@ -58,7 +58,7 @@ export const SelfRegistration = () => {
 						const {label, properties} = section;
 						return (
 							<Box mb="$5">
-							<Text bold fontSize="16" color={textColor}>{label}</Text>
+							<Text bold fontSize="$md" color={textColor}>{label}</Text>
 							{_.map(properties, function(field, key) {
 							const {type, description, maxLength, required, property} = field;
 							const fieldLabel = field.label;
@@ -66,10 +66,10 @@ export const SelfRegistration = () => {
 								return (
 									<FormControl my="$2" isRequired={required}>
 										<FormControlLabel><FormControlLabelText color={textColor}>{fieldLabel}</FormControlLabelText></FormControlLabel>
-										<Input><InputField type='text'
+										<Input borderColor={colorMode === 'light' ? theme['colors']['coolGray']['500'] : theme['colors']['gray']['300']}><InputField type='text'
 										                   key={key}
 										                   name={property}
-										                   maxLength={parseInt(maxLength)}
+										                   maxLength={maxLength ? parseInt(maxLength) : undefined}
 										                   accessibilityLabel={description}
 										                   returnKeyType="next"
 										                   color={textColor}
@@ -90,10 +90,10 @@ export const SelfRegistration = () => {
 								return (
 									<FormControl my="$2" isRequired={required}>
 										<FormControlLabel><FormControlLabelText color={textColor}>{fieldLabel}</FormControlLabelText></FormControlLabel>
-										<Input><InputField type='password'
+										<Input borderColor={colorMode === 'light' ? theme['colors']['coolGray']['500'] : theme['colors']['gray']['300']}><InputField type='password'
 										                   key={property}
 										                   name={property}
-										                   maxLength={parseInt(maxLength)}
+										                   maxLength={maxLength ? parseInt(maxLength) : undefined}
 										                   accessibilityLabel={description}
 										                   color={textColor}
 										                   onChangeText={(value) => {
@@ -113,10 +113,10 @@ export const SelfRegistration = () => {
 								return (
 									<FormControl my="$2" isRequired={required}>
 										<FormControlLabel><FormControlLabelText color={textColor}>{fieldLabel}</FormControlLabelText></FormControlLabel>
-										<Input><InputField type='email'
+										<Input borderColor={colorMode === 'light' ? theme['colors']['coolGray']['500'] : theme['colors']['gray']['300']}><InputField type='email'
 										                   key={property}
 										                   name={property}
-										                   maxLength={parseInt(maxLength)}
+										                   maxLength={maxLength ? parseInt(maxLength) : undefined}
 										                   accessibilityLabel={description}
 										                   color={textColor}
 										                   onChangeText={(value) => {
@@ -151,12 +151,12 @@ export const SelfRegistration = () => {
 											</SelectTrigger>
 											<SelectPortal>
 												<SelectBackdrop />
-												<SelectContent>
+												<SelectContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
 													<SelectDragIndicatorWrapper>
 														<SelectDragIndicator />
 													</SelectDragIndicatorWrapper>
 											{_.map(values, function (item, index, array) {
-												return <SelectItem key={index} value={index} label={item} />;
+												return <SelectItem key={index} value={index} label={item} bgColor={property === index ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: property === index ? theme['colors']['tertiary']['500-text'] : textColor } }} />;
 											})}
 												</SelectContent>
 											</SelectPortal>
@@ -215,15 +215,15 @@ export const SelfRegistration = () => {
 								) : null}
 
 								{results.barcode ? (
-									<Text mb="$3" color={textColor}>Your library card is <Text bold>{results.barcode}</Text></Text>
+									<Text mb="$3" color={textColor}>Your library card is <Text bold color={textColor}>{results.barcode}</Text></Text>
 								) : null}
 
 								{results.username ? (
-									<Text mb="$3" color={textColor}>Your username is <Text bold>{results.username}</Text></Text>
+									<Text mb="$3" color={textColor}>Your username is <Text bold color={textColor}>{results.username}</Text></Text>
 								) : null}
 
 								{results.password ? (
-									<Text mb="$3" color={textColor}>Your initial password is <Text bold>{results.password}</Text></Text>
+									<Text mb="$3" color={textColor}>Your initial password is <Text bold color={textColor}>{results.password}</Text></Text>
 								) : null}
 
 								{results.requirePinReset ? (

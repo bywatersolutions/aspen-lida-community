@@ -12,6 +12,8 @@ import { LanguageContext, LibrarySystemContext, UserContext } from '../../../con
 import { getTermFromDictionary } from '../../../translations/TranslationService';
 import { refreshProfile, reloadProfile } from '../../../util/api/user';
 
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../../util/logging.js';
+
 export const Settings_NotificationOptions = () => {
      const isFetchingUserProfile = useIsFetching({ queryKey: ['user'] });
      const [isLoading, setLoading] = React.useState(false);
@@ -54,7 +56,7 @@ export const Settings_NotificationOptions = () => {
                await registerForPushNotificationsAsync(library.baseUrl).then(async (result) => {
                     if (!result) {
                          setToggle(false);
-                         console.log('unable to update preference');
+                         logWarnMessage('unable to update preference');
                          setLoading(false);
                          if (Platform.OS === 'android') {
                               if (Device.osVersion < 13) {
@@ -94,13 +96,13 @@ export const Settings_NotificationOptions = () => {
           if (_.isObject(notificationSettings)) {
                const currentPreferences = Object.values(notificationSettings);
                for await (const pref of currentPreferences) {
-                    console.log(pref.option);
+                    logDebugMessage(pref.option);
                     const i = _.findIndex(currentPreferences, ['option', pref.option]);
                     const deviceSettings = _.filter(notificationSettings, { option: pref.option });
                     const result = await getNotificationPreference(library.baseUrl, expoToken, pref.option);
                     if (result && i !== -1) {
                          let prevSettings = notificationSettings[i];
-                         console.log(prevSettings.allow);
+                         logDebugMessage(prevSettings.allow);
                          if (result.success) {
                               if (pref.option === 'notifySavedSearch') {
                                    setNotifySavedSearch(result.allow);
@@ -117,7 +119,7 @@ export const Settings_NotificationOptions = () => {
                                    //setPreferences(newSettings);
                                    setNotifyAccount(result.allow);
                               }
-                              console.log(prevSettings.allow);
+                              logDebugMessage(prevSettings.allow);
                          }
                     }
                }
@@ -148,7 +150,7 @@ export const Settings_NotificationOptions = () => {
                          <Switch
                               onToggle={() => {
                                    toggleSwitch();
-                                   updateAspenToken().then((r) => console.log(r));
+                                   updateAspenToken().then((r) => logDebugMessage(r));
                               }}
                               defaultValue={toggled}
                               isDisabled={allowNotifications}
@@ -177,7 +179,8 @@ const EnableAllNotifications = (data) => {
      const toggleSwitch = () => setToggle((previousState) => !previousState);
 
      const enableAllNotifications = async (value) => {
-          console.log(value);
+          logDebugMessage("Enable/Disable All Notifications");
+          logDebugMessage(value);
           setLoading(true);
           let allowAllNotifications = true;
           if (value === 0 || value === 'false' || value === false) {
@@ -190,20 +193,12 @@ const EnableAllNotifications = (data) => {
                setNotifySavedSearch(allowAllNotifications);
                setNotifyCustom(allowAllNotifications);
                setNotifyAccount(allowAllNotifications);
-               /*
-			 _.set(notificationSettings.notifySavedSearch, notificationSettings.notifySavedSearch.allow, allowAllNotifications);
-			 _.set(notificationSettings.notifyCustom, notificationSettings.notifyCustom.allow, allowAllNotifications);
-			 _.set(notificationSettings.notifyAccount, notificationSettings.notifyAccount.allow, allowAllNotifications);
-
-			 */
                await reloadProfile(library.baseUrl).then((data) => {
                     updateUser(data);
                     updateNotificationSettings(data.notification_preferences, language);
                     setLoading(false);
                });
                queryClient.invalidateQueries({ queryKey: ['user', library.baseUrl, language] });
-
-               //updateNotificationSettings
           }
      };
 
@@ -214,7 +209,7 @@ const EnableAllNotifications = (data) => {
                     onToggle={() => {
                          toggleSwitch();
                          enableAllNotifications(!toggled).then((r) => {
-                              console.log(r);
+                              logDebugMessage(r);
                          });
                     }}
                     defaultValue={toggled}
@@ -231,7 +226,7 @@ const DisplayPreference = (data) => {
      const { notifySavedSearch, setNotifySavedSearch, notifyCustom, setNotifyCustom, notifyAccount, setNotifyAccount } = data;
 
      let defaultToggleState = false;
-     console.log(preference.allow);
+     logDebugMessage(preference.allow);
      defaultToggleState = preference.allow === 1 || preference.allow === '1' || preference.allow === true || preference.allow === 'true';
 
      if (preference.option === 'notifySavedSearch') {
@@ -246,8 +241,9 @@ const DisplayPreference = (data) => {
      const toggleSwitch = () => setToggle((previousState) => !previousState);
 
      const updatePreference = async (pref, value) => {
-          console.log(pref);
-          console.log(value);
+          logDebugMessage("Updating Preference");
+          logDebugMessage(pref);
+          logDebugMessage(value);
           let allowNotification = true;
           if (value === 0) {
                allowNotification = true;
@@ -278,7 +274,7 @@ const DisplayPreference = (data) => {
                     onToggle={() => {
                          toggleSwitch();
                          updatePreference(preference.option, preference.allow).then((r) => {
-                              console.log(r);
+                              logDebugMessage(r);
                          });
                     }}
                     isChecked={toggled}

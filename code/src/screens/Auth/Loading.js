@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Linking from 'expo-linking';
 import * as Notifications from 'expo-notifications';
 import {isEmpty, isUndefined} from 'lodash';
-import { Box, Center, Heading, Progress, VStack } from 'native-base';
+import { Box, Center, Heading, Progress, VStack } from '@gluestack-ui/themed';
 import React from 'react';
 import { checkVersion } from 'react-native-check-version';
 import { BrowseCategoryContext, LanguageContext, LibraryBranchContext, LibrarySystemContext, SystemMessagesContext, ThemeContext, UserContext } from '../../context/initialContext';
@@ -18,6 +18,7 @@ import { LIBRARY, reloadBrowseCategories } from '../../util/loadLibrary';
 import { getBrowseCategoryListForUser, PATRON } from '../../util/loadPatron';
 import { CatalogOffline } from './CatalogOffline';
 import { ForceLogout } from './ForceLogout';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../util/logging.js';
 
@@ -53,18 +54,20 @@ export const LoadingScreen = () => {
      const { systemMessages, updateSystemMessages } = React.useContext(SystemMessagesContext);
      const { theme, updateTheme, updateColorMode } = React.useContext(ThemeContext);
 
-     const [loadingText, setLoadingText] = React.useState('Loading...');
+     const [loadingText, setLoadingText] = React.useState('');
      const [loadingTheme, setLoadingTheme] = React.useState(true);
+
+     const insets = useSafeAreaInsets();
 
      const numSteps = 14;
 
-      React.useEffect(() => {
+     React.useEffect(() => {
           const unsubscribe = navigation.addListener('focus', async () => {
                // The screen is focused
                logDebugMessage('The screen is focused.');
                setIsReloading(true);
                setProgress(0);
-               queryClient.queryCache.clear();
+               queryClient.clear();
                //navigation.dispatch(StackActions.popToTop());
                try {
                     await AsyncStorage.getItem('@colorMode').then(async (mode) => {
@@ -122,9 +125,9 @@ export const LoadingScreen = () => {
           onSuccess: (data) => {
                setProgress(progress + (100 / numSteps));
                updateDictionary(translationsLibrary);
-               if (_.isUndefined(LIBRARY.appSettings.loadingMessageType) || LIBRARY.appSettings.loadingMessageType == 0) {
+               if (isUndefined(LIBRARY.appSettings.loadingMessageType) || LIBRARY.appSettings.loadingMessageType == 0) {
                     setLoadingText(getTermFromDictionary(language ?? 'en', 'loading_1'));
-               }else if (LIBRARY.appSettings.loadingMessageType == 1) {
+               } else if (LIBRARY.appSettings.loadingMessageType == 1) {
                     setLoadingText('Loading Languages');
                }
           },
@@ -383,13 +386,15 @@ export const LoadingScreen = () => {
           notificationHistoryQueryStatus === 'loading'
      ) {
           return (
-               <Center flex={1} px="3" w="100%">
-                    <Box w="90%" maxW="400">
+               <Center flex={1} px="$3" w="100%">
+                    <Box w="90%" maxW={400} pt={insets.top} pb={insets.bottom} pl={insets.left} pr={insets.right} >
                          <VStack>
-                              <Heading pb={5} color="primary.500" fontSize="md">
+                              <Heading pb="$5" color="$primary500" size="md">
                                    {loadingText}
                               </Heading>
-                              <Progress size="lg" value={progress} colorScheme="primary" />
+                              <Progress value={progress} w="100%" h="$3" size="lg">
+                                   <Progress.FilledTrack bg="$primary500" />
+                              </Progress>
                          </VStack>
                     </Box>
                </Center>

@@ -1,12 +1,13 @@
+// TODO: Remove unused file
 import React from 'react';
 import { LanguageContext, ThemeContext, UserContext } from '../../context/initialContext';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { navigateStack } from '../../helpers/RootNavigator';
 import { AlertDialog,      AlertDialogBackdrop,
      AlertDialogContent,
      AlertDialogHeader,
      AlertDialogBody,
-     AlertDialogFooter, Button, ButtonText, ButtonGroup, Center, Text } from '@gluestack-ui/themed';
+     AlertDialogFooter, Button, ButtonText, ButtonGroup, Center, Text, Heading } from '@gluestack-ui/themed';
 import { getTermFromDictionary } from '../../translations/TranslationService';
 import _ from 'lodash';
 

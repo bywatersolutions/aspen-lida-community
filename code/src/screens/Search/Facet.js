@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 // custom components and helper files
 import { ScrollView } from 'react-native';
 
-import { loadingSpinner } from '../../components/loadingSpinner';
+import { LoadingSpinner } from '../../components/loadingSpinner';
 import { userContext } from '../../context/user';
 import { getTermFromDictionary } from '../../translations/TranslationService';
 import { LIBRARY } from '../../util/loadLibrary';
@@ -17,6 +17,7 @@ import Facet_Rating from './Facets/Rating';
 import Facet_Slider from './Facets/Slider';
 import Facet_Year from './Facets/Year';
 import { UnsavedChangesExit } from './UnsavedChanges';
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../util/logging.js';
 
 export default class Facet extends Component {
      static contextType = userContext;
@@ -113,20 +114,6 @@ export default class Facet extends Component {
                     });
                }
           });
-          /*     if (sorted) {
-		 const sortedList = _.orderBy(
-		 list,
-		 ["isApplied", "count", "display"],
-		 ["desc", "desc", "asc"]
-		 );
-		 return _.filter(sortedList, function (facet) {
-		 return facet.display.indexOf(filterByQuery) > -1;
-		 });
-		 }
-
-		 return _.filter(list, function (facet) {
-		 return facet.display.indexOf(filterByQuery) > -1;
-		 }); */
      }
 
      searchBar = () => {
@@ -148,6 +135,10 @@ export default class Facet extends Component {
                                    color: 'muted.50',
                                    borderColor: 'muted.50',
                               }}
+                              _stack={{ style: {
+                                   outlineWidth: 0,
+                                   borderWidth: 1
+                              } }}
                               onSubmitEditing={async () => {
                                    this.setState({
                                         isLoading: true,
@@ -201,15 +192,34 @@ export default class Facet extends Component {
           }
      };
 
-     updateLocalValues = (group, values) => {
+     updateCheckboxFacet = (group, value, newValue) => {
+          logDebugMessage("Updating facet " + group + " with value " + value + " to " + newValue);
+          logDebugMessage("Existing values are " + this.state.values);
+          let newValues = this.state.values;
+          if (newValue) {
+               newValues = [...this.state.values, value];
+          }else{
+               newValues = newValues.filter(n=>n !== value)
+          }
+          logDebugMessage("Updated values are " + newValues);
+          this.setState({
+               values:newValues,
+          });
           SEARCH.hasPendingChanges = true;
-          this.updateGlobal(group, values);
+          this.updateGlobal(group, newValues);
+     }
+
+     updateLocalValues = (group, values) => {
           this.setState({
                values,
           });
+          logDebugMessage("Updating local values for " + group + " with values " + values);
+          SEARCH.hasPendingChanges = true;
+          this.updateGlobal(group, values);
      };
 
      updateGlobal = (group, values) => {
+          logDebugMessage("Updating global values for " + group + " with values " + values);
           const multiSelect = this.state.multiSelect;
           const prevSelections = this.state.values;
           addAppliedFilter(group, values, multiSelect);
@@ -269,7 +279,7 @@ export default class Facet extends Component {
           const { facets, category, multiSelect } = this.state;
 
           if (this.state.isLoading) {
-               return loadingSpinner();
+               return <LoadingSpinner />;
           }
 
           if (category === 'publishDate' || category === 'birthYear' || category === 'deathYear' || category === 'publishDateSort') {
@@ -324,9 +334,20 @@ export default class Facet extends Component {
                          {this.searchBar()}
                          <ScrollView>
                               <Box safeAreaX={5}>
-                                   <Checkbox.Group name={category} value={this.state.values} accessibilityLabel={getTermFromDictionary(this.state.language, 'filter_by')} onChange={(values) => this.updateLocalValues(category, values)}>
+                                   <Checkbox.Group
+                                        name={category}
+                                        value={this.state.values}
+                                        accessibilityLabel={getTermFromDictionary(this.state.language, 'filter_by')}
+                                        >
                                         {facets.map((item, index) => {
-                                             return <Facet_Checkbox key={index} data={item} language={this.state.language} />;
+                                             return <Facet_Checkbox
+                                                  key={index}
+                                                  data={item}
+                                                  language={this.state.language}
+                                                  updateCheckboxFacet={this.updateCheckboxFacet}
+                                                  category={category}
+                                                  values={this.state.values}
+                                                  />;
                                         })}
 
                                    </Checkbox.Group>

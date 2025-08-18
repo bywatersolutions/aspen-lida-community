@@ -96,6 +96,13 @@ export const StartCheckOutSession = () => {
      );
      */
 
+     console.log(activeAccount);
+     console.log(user.displayName);
+
+     const activeItem = availableAccounts.find(
+          item => activeAccount == item.ils_barcode || item.cat_username
+     );
+
      return (
           <Center>
                <AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={() => GoBackHome()}>
@@ -110,27 +117,40 @@ export const StartCheckOutSession = () => {
                                    <Select
                                         name="linkedAccount"
                                         selectedValue={activeAccount}
-                                        defaultValue={activeAccount}
-                                        minWidth="200"
                                         accessibilityLabel={getTermFromDictionary(language, 'select_an_account')}
                                         mt="$1"
                                         mb="$3"
                                         onValueChange={(itemValue) => setActiveAccount(itemValue)}>
                                         <SelectTrigger variant="outline" size="md">
-                                             <SelectInput color={textColor} placeholder={getTermFromDictionary(language, 'select_an_account')} />
+                                             <SelectInput
+                                                  value={
+                                                       // Find the displayName of the selected account or use placeholder
+                                                       (() => {
+                                                            if (activeAccount === (user.ils_barcode ?? user.cat_username)) {
+                                                                 return user.displayName;
+                                                            }
+                                                            const found = availableAccounts.find(
+                                                                 item => activeAccount === (item.ils_barcode ?? item.cat_username)
+                                                            );
+                                                            return found ? found.displayName : '';
+                                                       })()
+                                                  }
+                                                  color={textColor}
+                                                  placeholder={getTermFromDictionary(language, 'select_an_account')}
+                                             />
                                              <SelectIcon mr="$3">
                                                   <Icon as={ChevronDownIcon} color={textColor} />
                                              </SelectIcon>
                                         </SelectTrigger>
-                                        <SelectPortal  useRNModal={true}>
+                                        <SelectPortal useRNModal={true}>
                                              <SelectBackdrop />
-                                             <SelectContent>
+                                             <SelectContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                                   <SelectDragIndicatorWrapper>
                                                        <SelectDragIndicator />
                                                   </SelectDragIndicatorWrapper>
-                                                  <SelectItem label={user.displayName} value={user.ils_barcode ?? user.cat_username} />
+                                                  <SelectItem label={user.displayName} value={user.ils_barcode ?? user.cat_username} bgColor={activeAccount === (user.ils_barcode ?? user.cat_username) ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: activeAccount === (user.ils_barcode ?? user.cat_username) ? theme['colors']['tertiary']['500-text'] : textColor } }} />
                                                   {availableAccounts.map((item, index) => {
-                                                       return <SelectItem label={item.displayName} value={item.ils_barcode ?? item.cat_username} key={index} />;
+                                                       return <SelectItem label={item.displayName} value={item.ils_barcode ?? item.cat_username} key={index} bgColor={activeAccount === (item.ils_barcode || item.cat_username) ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: activeAccount === (item.ils_barcode || item.cat_username) ? theme['colors']['tertiary']['500-text'] : textColor } }}/>;
                                                   })}
                                              </SelectContent>
                                         </SelectPortal>

@@ -282,6 +282,22 @@ export const MyReadingHistory = () => {
           } else if (sort === 'checkedOut') {
                sortLength = 8 * sortBy.last_used.length + 80;
           }
+
+          const sortLabel = () => {
+               switch (sort) {
+                    case "author":
+                         return sortBy.author;
+                    case "format":
+                         return sortBy.format;
+                    case "checkedOut":
+                         return sortBy.last_used;
+                    case "title":
+                         return sortBy.title;
+                    default:
+                         return getTermFromDictionary(language, 'select_sort_method');
+               }
+          };
+
           return (
                <Box
                     p="$5"
@@ -290,7 +306,7 @@ export const MyReadingHistory = () => {
                     borderColor={colorMode === 'light' ? theme['colors']['coolGray']['200'] : theme['colors']['gray']['600']}
                     flexWrap="nowrap">
                     <VStack space="sm">
-                         <Input>
+                         <Input borderColor={colorMode === 'light' ? '$none' : theme['colors']['gray']['400']}>
                               <InputField
                                    returnKeyType="search"
                                    variant="outline"
@@ -312,23 +328,22 @@ export const MyReadingHistory = () => {
                                             defaultValue={sort}
                                             accessibilityLabel={getTermFromDictionary(language, 'select_sort_method')}
                                             onValueChange={(itemValue) => updateSort(itemValue)}>
-                                             <SelectTrigger variant="outline" size="sm" borderWidth={colorMode === 'light' ? 0 : 1}
-                                                            borderColor={colorMode === 'light' ? '$none' : theme['colors']['gray']['400']}>
-                                                  <SelectInput color={textColor} placeholder={getTermFromDictionary(language, 'select_sort_method')} />
+                                             <SelectTrigger variant="outline" size="sm">
+                                                  <SelectInput pt="$2" fontSize="$sm" color={textColor} value={sortLabel()} />
                                                   <SelectIcon mr="$3">
                                                        <Icon color={textColor} as={ChevronDownIcon} />
                                                   </SelectIcon>
                                              </SelectTrigger>
                                              <SelectPortal>
                                                   <SelectBackdrop />
-                                                  <SelectContent>
+                                                  <SelectContent  bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                                        <SelectDragIndicatorWrapper>
                                                             <SelectDragIndicator />
                                                        </SelectDragIndicatorWrapper>
-                                                       <SelectItem label={sortBy.title} value="title" key={0} />
-                                                       <SelectItem label={sortBy.author} value="author" key={1} />
-                                                       <SelectItem label={sortBy.last_used} value="checkedOut" key={2} />
-                                                       <SelectItem label={sortBy.format} value="format" key={3} />
+                                                       <SelectItem label={sortBy.title} value="title" key={0} bgColor={sort == "title" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: sort == "title" ? theme['colors']['tertiary']['500-text'] : textColor } }}  />
+                                                       <SelectItem label={sortBy.author} value="author" key={1}  bgColor={sort == "author" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: sort == "author" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
+                                                       <SelectItem label={sortBy.last_used} value="checkedOut" key={2}  bgColor={sort == "checkedOut" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: sort == "checkedOut" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
+                                                       <SelectItem label={sortBy.format} value="format" key={3}  bgColor={sort == "format" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: sort == "format" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
                                                   </SelectContent>
                                              </SelectPortal>
                                         </Select>
@@ -348,7 +363,7 @@ export const MyReadingHistory = () => {
                     <Center>
                          <AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose}>
                               <AlertDialogBackdrop />
-                              <AlertDialogContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
+                              <AlertDialogContent  bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                    <AlertDialogHeader>
                                         <Heading size="md" color={textColor}>{getTermFromDictionary(language, 'reading_history_opt_out')}</Heading>
                                    </AlertDialogHeader>
@@ -474,8 +489,8 @@ export const MyReadingHistory = () => {
                {_.size(systemMessagesForScreen) > 0 ? <Box safeArea={2}>{showSystemMessage()}</Box> : null}
                {user.trackReadingHistory !== '1' ? (
                     <Box p="$5">
-                         <Button onPress={optIn} isLoading={optingIn} isLoadingText={getTermFromDictionary(language, 'updating', true)}>
-                              <ButtonText>{getTermFromDictionary(language, 'reading_history_opt_in')}</ButtonText>
+                         <Button bgColor={theme['colors']['primary']['700']} onPress={optIn} isLoading={optingIn} isLoadingText={getTermFromDictionary(language, 'updating', true)}>
+                              <ButtonText color={theme['colors']['primary']['500-text']}>{getTermFromDictionary(language, 'reading_history_opt_in')}</ButtonText>
                          </Button>
                          {getDisclaimer()}
                     </Box>
@@ -562,10 +577,10 @@ const Item = (data) => {
                     </HStack>
                     <Actionsheet isOpen={isOpen} onClose={toggle} size="full">
                          <ActionsheetBackdrop />
-                         <ActionsheetContent>
+                         <ActionsheetContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                               <Box w="100%" h="$60" px="$4" justifyContent="center">
                                    <Text
-                                        fontSize={18}
+                                        fontSize="$lg"
                                         color={textColor}>
                                         {getTitle(item.title)}
                                    </Text>
@@ -577,9 +592,9 @@ const Item = (data) => {
                                              toggle();
                                         }}>
                                         <ActionsheetIcon>
-                                             <Icon as={MaterialIcons} name="search" mr="$1" size="md" />
+                                             <Icon as={MaterialIcons} name="search" mr="$1" size="md" color={textColor} />
                                         </ActionsheetIcon>
-                                        <ActionsheetItemText>{getTermFromDictionary(language, 'view_item_details')}</ActionsheetItemText>
+                                        <ActionsheetItemText color={textColor}>{getTermFromDictionary(language, 'view_item_details')}</ActionsheetItemText>
                                    </ActionsheetItem>
                               ) : null}
                               <ActionsheetItem
@@ -593,9 +608,9 @@ const Item = (data) => {
                                         toggle();
                                    }}>
                                    <ActionsheetIcon>
-                                        <Icon as={MaterialIcons} name="delete" mr="$1" size="md" />
+                                        <Icon as={MaterialIcons} name="delete" mr="$1" size="md" color={textColor} />
                                    </ActionsheetIcon>
-                                   <ActionsheetItemText>
+                                   <ActionsheetItemText color={textColor}>
                                         {getTermFromDictionary(language, 'reading_history_delete')}
                                    </ActionsheetItemText>
                               </ActionsheetItem>

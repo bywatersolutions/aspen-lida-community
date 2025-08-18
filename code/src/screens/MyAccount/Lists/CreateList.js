@@ -49,13 +49,13 @@ const CreateList = (props) => {
 
      const [title, setTitle] = React.useState('');
      const [description, setDescription] = React.useState('');
-     const [isPublic, setPublic] = React.useState(false);
+     const [isPublic, setPublic] = React.useState("false");
 
      const toggle = () => {
           setShowModal(!showModal);
           setTitle('');
           setDescription('');
-          setPublic(false);
+          setPublic("false");
           setAdding(false);
      };
 
@@ -79,15 +79,15 @@ const CreateList = (props) => {
                                    <FormControlLabel>
                                         <FormControlLabelText color={textColor}>{getTermFromDictionary(language, 'title')}</FormControlLabelText>
                                    </FormControlLabel>
-                                   <Input>
-                                        <InputField id="title" onChangeText={(text) => setTitle(text)} returnKeyType="next" defaultValue={title} color={textColor}/>
+                                   <Input borderColor={colorMode === 'light' ? theme['colors']['coolGray']['500'] : theme['colors']['gray']['300']}>
+                                        <InputField id="title" onChangeText={(text) => setTitle(text)} returnKeyType="next" defaultValue={title} color={textColor} />
                                    </Input>
                               </FormControl>
                               <FormControl pb="$5">
                                    <FormControlLabel>
                                         <FormControlLabelText color={textColor}>{getTermFromDictionary(language, 'description')}</FormControlLabelText>
                                    </FormControlLabel>
-                                   <Textarea id="description" onChangeText={(text) => setDescription(text)} defaultValue={description} returnKeyType="next"><TextareaInput color={textColor}/></Textarea>
+                                   <Textarea id="description" onChangeText={(text) => setDescription(text)} defaultValue={description} returnKeyType="next" borderColor={colorMode === 'light' ? theme['colors']['coolGray']['500'] : theme['colors']['gray']['300']}><TextareaInput color={textColor} /></Textarea>
                               </FormControl>
                               <FormControl>
                                    <FormControlLabel>
@@ -100,15 +100,15 @@ const CreateList = (props) => {
                                              setPublic(nextValue);
                                         }}>
                                         <HStack direction="row" alignItems="center" space="md" w="75%" maxW="300px">
-                                             <Radio value={false} my="$1">
-                                                  <RadioIndicator mr="$2">
-                                                       <RadioIcon as={CircleIcon} strokeWidth={1} />
+                                             <Radio value="false" my="$1">
+                                                  <RadioIndicator mr="$2" borderColor={colorMode === 'light' ? theme['colors']['coolGray']['500'] : theme['colors']['gray']['300']}>
+                                                       <RadioIcon as={CircleIcon} color={colorMode === 'light' ? theme['colors']['coolGray']['500'] : theme['colors']['gray']['300']} />
                                                   </RadioIndicator>
                                                   <RadioLabel color={textColor}>{getTermFromDictionary(language, 'private')}</RadioLabel>
                                              </Radio>
-                                             <Radio value={true} my="$1">
-                                                  <RadioIndicator mr="$2">
-                                                       <RadioIcon as={CircleIcon} strokeWidth={1} />
+                                             <Radio value="true" my="$1">
+                                                  <RadioIndicator mr="$2" borderColor={colorMode === 'light' ? theme['colors']['coolGray']['500'] : theme['colors']['gray']['300']}>
+                                                       <RadioIcon as={CircleIcon} color={colorMode === 'light' ? theme['colors']['coolGray']['500'] : theme['colors']['gray']['300']} />
                                                   </RadioIndicator>
                                                   <RadioLabel color={textColor}>{getTermFromDictionary(language, 'public')}</RadioLabel>
                                              </Radio>

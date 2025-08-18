@@ -242,14 +242,14 @@ export const Editions = () => {
                                              {holdSelectItemResponse?.items ? (
                                                   <Select name="itemForHold" minWidth={200} accessibilityLabel={getTermFromDictionary(language, 'select_item')} mt="$1" mb="$2" onValueChange={(itemValue) => setSelectedItem(itemValue)}>
                                                        <SelectTrigger>
-                                                            <SelectInput placeholder="Select option" />
+                                                            <SelectInput placeholder="Select option" color={textColor} />
                                                             <SelectIcon mr="$3">
                                                                  <Icon as={ChevronDownIcon} color={textColor} />
                                                             </SelectIcon>
                                                        </SelectTrigger>
                                                        <SelectPortal useRNModal={true}>
                                                             <SelectBackdrop />
-                                                            <SelectContent>
+                                                            <SelectContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                                                  <SelectDragIndicatorWrapper>
                                                                       <SelectDragIndicator />
                                                                  </SelectDragIndicatorWrapper>
@@ -263,7 +263,7 @@ export const Editions = () => {
                                                                            if (item.status) {
                                                                                 itemLabel += " - " + item.status;
                                                                            }
-                                                                           return <SelectItem label={item.callNumber} value={item.itemNumber} key={index} />;
+                                                                           return <SelectItem label={item.callNumber} value={item.itemNumber} key={index} sx={{ _text: { color: textColor } }} />;
                                                                       })}
                                                                  </SelectScrollView>
                                                             </SelectContent>

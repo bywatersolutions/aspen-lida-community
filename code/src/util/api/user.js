@@ -21,7 +21,7 @@ export async function refreshProfile(url) {
      const postBody = await postData();
      const discovery = create({
           baseURL: url,
-          timeout: GLOBALS.timeoutAverage,
+          timeout: GLOBALS.timeoutSlow,
           headers: getHeaders(endpoint.isPost),
           auth: createAuthTokens(),
           params: {
@@ -29,8 +29,8 @@ export async function refreshProfile(url) {
                checkIfValid: false,
           },
      });
+     logDebugMessage("Refreshing profile");
      const response = await discovery.post(`${endpoint.url}getPatronProfile`, postBody);
-     console.log(response);
      if (response.ok) {
           if (response.data?.result) {
                //console.log(response.data.result.profile);
@@ -39,10 +39,15 @@ export async function refreshProfile(url) {
                } else {
                     return response.data.result;
                }
+          }else{
+               logWarnMessage("Refreshing profile failed, did not get a result");
           }
+     }else{
+          logWarnMessage("Refreshing profile failed did not get an ok response");
      }
      return {
           success: false,
+          errorFetching: true
      };
 }
 
@@ -54,7 +59,7 @@ export async function reloadProfile(url) {
      const postBody = await postData();
      const discovery = create({
           baseURL: url,
-          timeout: GLOBALS.timeoutAverage,
+          timeout: GLOBALS.timeoutSlow, //MDN 25.08 DIS-276 use the slow timeout to give connections to eContent time to reload
           headers: getHeaders(endpoint.isPost),
           auth: createAuthTokens(),
           params: {
@@ -63,6 +68,7 @@ export async function reloadProfile(url) {
                checkIfValid: false,
           },
      });
+     logDebugMessage("Reloading profile");
      const response = await discovery.post(`${endpoint.url}getPatronProfile`, postBody);
      if (response.ok) {
           if (response.data.result) {
@@ -72,10 +78,15 @@ export async function reloadProfile(url) {
                } else {
                     return response.data.result;
                }
+          }else{
+               logWarnMessage("Reloading profile failed, did not get a result");
           }
+     }else{
+          logWarnMessage("Reloading profile failed");
      }
      return {
           success: false,
+          errorFetching: true
      };
 }
 
@@ -123,8 +134,11 @@ export async function validateUser(username, password, url) {
           auth: createAuthTokens(),
      });
      const results = await discovery.post('/UserAPI?method=validateAccount', postBody);
+     logDebugMessage("Validating User");
      if (results.ok) {
           return results.data.result;
+     }else{
+          logWarnMessage("Validating User failed");
      }
 }
 
@@ -141,12 +155,13 @@ export async function validateSession(url) {
           auth: createAuthTokens(),
      });
      const response = await api.post('/UserAPI?method=validateSession', postBody);
+     logDebugMessage("Validating Session");
      if (response.ok) {
           if (response?.data?.result) {
                return response.data.result;
           }
      } else {
-          console.log(response);
+          logWarnMessage("Validating Session failed");
      }
      return [];
 }
@@ -164,14 +179,15 @@ export async function revalidateUser(url) {
           auth: createAuthTokens(),
      });
      const response = await api.post('/UserAPI?method=validateUserCredentials', postBody);
+     logDebugMessage("Revalidating User");
      if (response.ok) {
           if (response?.data?.result?.valid) {
                return response.data.result.valid;
           } else {
-               console.log(response.data);
+               logWarnMessage("Revalidating user return invalid");
           }
      } else {
-          console.log(response);
+          logWarnMessage("Revalidating user failed");
      }
      return false;
 }

@@ -7,6 +7,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
      Badge,
+     BadgeText,
      Box,
      Button,
      ButtonGroup,
@@ -279,7 +280,7 @@ export const MyList = () => {
                                    {registrationRequired ? (
                                         <HStack mt="$1" direction="row" space="sm" flexWrap="wrap">
                                              <Badge key={0} colorScheme="secondary" mt="$1" variant="outline" rounded="4px" fontSize="$xs">
-                                                  {getTermFromDictionary(language, 'registration_required')}
+                                                  <BadgeText>{getTermFromDictionary(language, 'registration_required')}</BadgeText>
                                              </Badge>
                                         </HStack>
                                    ) : null}
@@ -381,6 +382,22 @@ export const MyList = () => {
           } else if (sort === 'dateAdded') {
                sortLength = 8 * sortBy.dateAdded.length + 80;
           }
+
+          const sortLabel = () => {
+               switch (sort) {
+                    case "recentlyAdded":
+                         return sortBy.recentlyAdded;
+                    case "custom":
+                         return sortBy.custom;
+                    case "title":
+                         return sortBy.title;
+                    case "dateAdded":
+                         return sortBy.dateAdded;
+                    default:
+                         return getTermFromDictionary(language, 'select_sort_method');
+               }
+          };
+
           return (
                <Box
                     p="$2"
@@ -397,23 +414,22 @@ export const MyList = () => {
                                         defaultValue={sort}
                                         accessibilityLabel={getTermFromDictionary(language, 'select_sort_method')}
                                         onValueChange={(itemValue) => setSort(itemValue)}>
-                                        <SelectTrigger variant="outline" size="sm" borderWidth={colorMode === 'light' ? 0 : 1}
-                                                       borderColor={colorMode === 'light' ? '$none' : theme['colors']['gray']['400']}>
-                                             <SelectInput color={textColor} placeholder="Select option" />
+                                        <SelectTrigger variant="outline" size="sm">
+                                             <SelectInput pt="$2" fontSize="$sm" color={textColor} value={sortLabel()} />
                                              <SelectIcon mr="$3">
                                                   <Icon color={textColor} as={ChevronDownIcon} />
                                              </SelectIcon>
                                         </SelectTrigger>
                                         <SelectPortal>
                                              <SelectBackdrop />
-                                             <SelectContent>
+                                             <SelectContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                                   <SelectDragIndicatorWrapper>
                                                        <SelectDragIndicator />
                                                   </SelectDragIndicatorWrapper>
-                                                  <SelectItem label={sortBy.title} value="title" key={0} />
-                                                  <SelectItem label={sortBy.dateAdded} value="dateAdded" key={1} />
-                                                  <SelectItem label={sortBy.recentlyAdded} value="recentlyAdded" key={2} />
-                                                  <SelectItem label={sortBy.custom} value="custom" key={3} />
+                                                  <SelectItem label={sortBy.title} value="title" key={0} bgColor={sort == "title" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: sort == "title" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
+                                                  <SelectItem label={sortBy.dateAdded} value="dateAdded" key={1} bgColor={sort == "dateAdded" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: sort == "dateAdded" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
+                                                  <SelectItem label={sortBy.recentlyAdded} value="recentlyAdded" key={2} bgColor={sort == "recentlyAdded" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: sort == "recentlyAdded" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
+                                                  <SelectItem label={sortBy.custom} value="custom" key={3} bgColor={sort == "custom" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: sort == "custom" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
                                              </SelectContent>
                                         </SelectPortal>
                                    </Select>

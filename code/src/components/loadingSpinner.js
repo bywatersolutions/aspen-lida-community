@@ -1,18 +1,22 @@
 import React from 'react';
-import { Center, Heading, HStack, VStack, Spinner } from '@gluestack-ui/themed-native-base';
+import { Center, Heading, HStack, VStack, Spinner } from '@gluestack-ui/themed';
 import { ThemeContext } from '../context/initialContext';
+import {isEmpty, isUndefined} from 'lodash';
 
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../util/logging.js';
 /*
 TODO: Translate the accessibility labels
 */
 
 export function loadingSpinner(message = '') {
+     const { theme, textColor, colorMode } = React.useContext(ThemeContext);
+
      if (message !== '') {
           return (
                <Center flex={1} px="3">
-                    <VStack space={2} alignItems="center">
-                         <Spinner size="lg" accessibilityLabel="Loading..." />
-                         <Heading fontSize="md">{message}</Heading>
+                    <VStack space="md" alignItems="center">
+                         <Spinner size="large" accessibilityLabel="Loading..." color={theme['colors']['primary']['500']}/>
+                         <Heading size="md" color={textColor}>{message}</Heading>
                     </VStack>
                </Center>
           );
@@ -21,21 +25,22 @@ export function loadingSpinner(message = '') {
      return (
           <Center flex={1}>
                <HStack>
-                    <Spinner size="lg" accessibilityLabel="Loading..." />
+                    <Spinner size="large" accessibilityLabel="Loading..." />
                </HStack>
           </Center>
      );
 }
 
-export const LoadingSpinner = (message) => {
+export const LoadingSpinner = (props) => {
      const { colorMode, theme, textColor } = React.useContext(ThemeContext);
-     if (message && message !== '') {
+     if (!isUndefined(props) && !isEmpty(props) && !isUndefined(props.message) && !isEmpty(props.message)) {
+          logDebugMessage("Showing loading spinner with message: " + props.message);
           return (
                <Center flex={1} px="$3">
                     <VStack space="md" alignItems="center">
-                         <Spinner size="lg" accessibilityLabel="Loading..." />
-                         <Heading fontSize="md" color={textColor}>
-                              {message}
+                         <Spinner size="large" color={theme['colors']['primary']['500']} accessibilityLabel="Loading..." />
+                         <Heading size="md" color={textColor}>
+                              {props.message}
                          </Heading>
                     </VStack>
                </Center>
@@ -45,7 +50,7 @@ export const LoadingSpinner = (message) => {
      return (
           <Center flex={1}>
                <HStack>
-                    <Spinner size="lg" accessibilityLabel="Loading..." />
+                    <Spinner color={theme['colors']['primary']['500']} size="large" accessibilityLabel="Loading..." />
                </HStack>
           </Center>
      );

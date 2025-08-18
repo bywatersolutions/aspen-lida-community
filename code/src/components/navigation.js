@@ -12,7 +12,7 @@ import { Platform } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 
 import * as Sentry from '@sentry/react-native';
-import { BrowseCategoryProvider, CheckoutsProvider, GroupedWorkProvider, HoldsProvider, LanguageProvider, LibraryBranchProvider, LibrarySystemProvider, SearchProvider, SystemMessagesProvider, ThemeProvider, UserContext, UserProvider } from '../context/initialContext';
+import { BrowseCategoryProvider, CheckoutsProvider, GroupedWorkProvider, HoldsProvider, LanguageProvider, LibraryBranchProvider, LibrarySystemProvider, SearchProvider, SystemMessagesProvider, ThemeProvider, UserContext, UserProvider, LanguageContext } from '../context/initialContext';
 import { navigationRef } from '../helpers/RootNavigator';
 import LaunchStackNavigator from '../navigations/LaunchStackNavigator';
 
@@ -26,6 +26,9 @@ import { LIBRARY } from '../util/loadLibrary';
 import { checkCachedUrl } from '../util/login';
 import { RemoveData } from '../util/logout';
 import LibraryCardScanner from './LibraryCardScanner';
+import TitleWithLogo from '../components/TitleWithLogo'
+
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../util/logging.js';
 
@@ -104,6 +107,7 @@ export function App() {
                background: screenBackgroundColor,
           },
      };
+     const queryClient = useQueryClient();
      const [state, dispatch] = React.useReducer(
           (prevState, action) => {
                switch (action.type) {
@@ -205,14 +209,14 @@ export function App() {
                               } else {
                                    logWarnMessage('Connection failed, logging out.');
                                    userToken = null;
-                                   await RemoveData().then((res) => {
+                                   await RemoveData(queryClient, updateUser).then((res) => {
                                         dispatch({ type: 'SIGN_OUT' });
                                    });
                               }
                          });
                     } else {
                          logWarnMessage('No cached library url, logging out.');
-                         await RemoveData().then((res) => {
+                         await RemoveData(queryClient, updateUser).then((res) => {
                               dispatch({ type: 'SIGN_OUT' });
                          });
                     }
@@ -241,9 +245,7 @@ export function App() {
                     });
                },
                signOut: async () => {
-                    await RemoveData().then((res) => {
-                         //queryClient.invalidateQueries({});
-                         //updateUser([]);
+                    await RemoveData(queryClient, updateUser).then((res) => {
                          dispatch({ type: 'SIGN_OUT' });
                     });
                     logDebugMessage('Session ended.');
@@ -256,6 +258,9 @@ export function App() {
           // We haven't finished checking for the token yet
           return <SplashScreen />;
      }
+
+     const { language } = React.useContext(LanguageContext);
+     const {updateUser} = React.useContext(UserContext);
 
      return (
           <AuthContext.Provider value={authContext}>
@@ -385,7 +390,10 @@ export function App() {
                                                                                      name="SelfRegistration"
                                                                                      component={SelfRegistration}
                                                                                      options={{
-                                                                                          title: getTermFromDictionary('en', 'register_for_a_library_card'),
+                                                                                          header: () => {
+                                                                                               const title = getTermFromDictionary(language, 'register_for_a_library_card');
+                                                                                               return <TitleWithLogo title={title} hideBack={true} />;
+                                                                                          },
                                                                                           headerShown: true,
                                                                                           presentation: 'card',
                                                                                           gestureEnabled: false,

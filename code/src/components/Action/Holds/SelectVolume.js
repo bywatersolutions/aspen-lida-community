@@ -9,7 +9,7 @@ import _ from 'lodash';
 import { getTermFromDictionary } from '../../../translations/TranslationService';
 
 export const SelectVolume = (props) => {
-     const { id, volume, setVolume, showModal, promptForHoldType, holdType, setHoldType, language, url, textColor, theme } = props;
+     const { id, volume, setVolume, showModal, promptForHoldType, holdType, setHoldType, language, url, textColor, theme, colorMode } = props;
 
      const { status, data, error, isFetching } = useQuery({
           queryKey: ['volumes', id, url],
@@ -67,12 +67,8 @@ export const SelectVolume = (props) => {
                                         defaultValue={volume}
                                         minWidth="200"
                                         accessibilityLabel={getTermFromDictionary(language, 'select_volume')}
-                                        _selectedItem={{
-                                             bg: 'tertiary.300',
-                                             endIcon: <CheckIcon size="5" />,
-                                        }}
-                                        mt={1}
-                                        mb={2}
+                                        mt="$1"
+                                        mb="$2"
                                         onValueChange={(itemValue) => setVolume(itemValue)}>
                                         <SelectTrigger variant="outline" size="md">
                                              {_.map(data, function (item, index, array) {
@@ -86,16 +82,16 @@ export const SelectVolume = (props) => {
                                         </SelectTrigger>
                                         <SelectPortal useRNModal={true}>
                                              <SelectBackdrop />
-                                             <SelectContent p="$5">
+                                             <SelectContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                                   <SelectDragIndicatorWrapper>
                                                        <SelectDragIndicator />
                                                   </SelectDragIndicatorWrapper>
                                                   <SelectScrollView>
                                                        {_.map(data, function (item, index, array) {
                                                             if (item.volumeId === volume) {
-                                                                 return <SelectItem label={item.label} value={item.volumeId} key={index} bgColor={theme['colors']['tertiary']['300']} />;
+                                                                 return <SelectItem label={item.label} value={item.volumeId} key={index} bgColor={theme['colors']['tertiary']['300']}  sx={{ _text: { color: theme['colors']['tertiary']['500-text']} }} />;
                                                             }
-                                                            return <SelectItem label={item.label} value={item.volumeId} key={index} />;
+                                                            return <SelectItem label={item.label} value={item.volumeId} key={index} sx={{ _text: { color: textColor } }} />;
                                                        })}
                                                   </SelectScrollView>
                                              </SelectContent>

@@ -16,7 +16,6 @@ import {
      Input,
      InputField, InputIcon,
      InputSlot,
-     Pressable,
 } from '@gluestack-ui/themed';
 import React, { useRef } from 'react';
 
@@ -225,7 +224,7 @@ export const GetLoginForm = (props) => {
                     <FormControlLabel>
                          <FormControlLabelText fontSize="$sm" color={textColor}>{usernameLabel}</FormControlLabelText>
                     </FormControlLabel>
-                    <Input>
+                    <Input borderColor={colorMode === 'light' ? theme['colors']['coolGray']['500'] : theme['colors']['gray']['300']}>
                          <InputField autoCapitalize="none"
                               size="$xl"
                               autoCorrect={false}
@@ -236,12 +235,12 @@ export const GetLoginForm = (props) => {
                               onChangeText={(text) => {SecureStore.setItemAsync('defaultUsername', text); setUsername(text);}}
                               returnKeyType="next"
                               textContentType="username"
-                              required
                               onSubmitEditing={() => {
                                    passwordRef.current.focus();
                               }}
                               blurOnSubmit={false}
                               color={textColor}
+                                     autoComplete="username"
                          />
                          {allowBarcodeScanner ?
                               <InputSlot onPress={() => openScanner()}>
@@ -253,7 +252,7 @@ export const GetLoginForm = (props) => {
                     <FormControlLabel>
                          <FormControlLabelText size="sm" color={textColor}>{passwordLabel}</FormControlLabelText>
                     </FormControlLabel>
-                    <Input>
+                    <Input borderColor={colorMode === 'light' ? theme['colors']['coolGray']['500'] : theme['colors']['gray']['300']}>
                          <InputField variant="filled"
                               size="$xl"
                               type={showPassword ? 'text' : 'password'}
@@ -265,8 +264,7 @@ export const GetLoginForm = (props) => {
                                    setLoading(true);
                                    await initialValidation();
                               }}
-                              required
-                              color={textColor}
+                              color={textColor} autoComplete="password"
                          />
                          <InputSlot onPress={toggleShowPassword}>
                               <InputIcon as={Ionicons} name={showPassword ? 'eye-outline' : 'eye-off-outline'} mr="$2" color={textColor} />

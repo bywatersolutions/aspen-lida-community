@@ -267,6 +267,29 @@ export const MyHolds = () => {
                showSelectOptions = true;
           }
 
+          const pendingSortLabel = () => {
+               switch (userHoldPendingSortMethod) {
+                    case "author":
+                         return sortBy.author;
+                    case "format":
+                         return sortBy.format;
+                    case "status":
+                         return sortBy.status;
+                    case "placed":
+                         return sortBy.date_placed;
+                    case "position":
+                         return sortBy.position;
+                    case "location":
+                         return sortBy.pickup_location;
+                    case "libraryAccount":
+                         return sortBy.library_account;
+                    case "sortTitle":
+                         return sortBy.title;
+                    default:
+                         return getTermFromDictionary(language, 'select_sort_method');
+               }
+          };
+
           let pendingSortLength = 8 * sortBy.title.length + 80;
           if (userHoldPendingSortMethod === 'author') {
                pendingSortLength = 8 * sortBy.author.length + 80;
@@ -285,7 +308,7 @@ export const MyHolds = () => {
           } else if (userHoldPendingSortMethod === 'sortTitle') {
                pendingSortLength = 8 * sortBy.title.length + 80;
           }
-          
+
           if (section === 'pending') {
                if (showSelectOptions) {
                     return (
@@ -298,27 +321,26 @@ export const MyHolds = () => {
                                                   selectedValue={userHoldPendingSortMethod}
                                                   accessibilityLabel={getTermFromDictionary(language, 'select_sort_method')}
                                                   onValueChange={(itemValue) => togglePendingSort(itemValue)}>
-                                                  <SelectTrigger variant="outline" size="sm" borderWidth={colorMode === 'light' ? '$none' : '$1'}
-                                                                 borderColor={colorMode === 'light' ? '$none' : theme['colors']['gray']['400']}>
-                                                       <SelectInput color={textColor} placeholder="Select option" />
+                                                  <SelectTrigger variant="outline" size="sm">
+                                                       <SelectInput pt="$2" fontSize="$sm" color={textColor} value={pendingSortLabel()}/>
                                                        <SelectIcon mr="$3">
                                                             <Icon color={textColor} as={ChevronDownIcon} />
                                                        </SelectIcon>
                                                   </SelectTrigger>
                                                   <SelectPortal>
                                                        <SelectBackdrop />
-                                                       <SelectContent>
+                                                       <SelectContent  bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                                             <SelectDragIndicatorWrapper>
                                                                  <SelectDragIndicator />
                                                             </SelectDragIndicatorWrapper>
-                                                       <SelectItem label={sortBy.title} value="sortTitle" key={0} />
-                                                       <SelectItem label={sortBy.author} value="author" key={1} />
-                                                       <SelectItem label={sortBy.format} value="format" key={2} />
-                                                       <SelectItem label={sortBy.status} value="status" key={3} />
-                                                       <SelectItem label={sortBy.date_placed} value="placed" key={4} />
-                                                       <SelectItem label={sortBy.position} value="position" key={5} />
-                                                       <SelectItem label={sortBy.pickup_location} value="location" key={6} />
-                                                       <SelectItem label={sortBy.library_account} value="libraryAccount" key={7} />
+                                                            <SelectItem label={sortBy.title} value="sortTitle" key={0} bgColor={userHoldPendingSortMethod == "sortTitle" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "sortTitle" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                            <SelectItem label={sortBy.author} value="author" key={1} bgColor={userHoldPendingSortMethod == "author" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "author" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                            <SelectItem label={sortBy.format} value="format" key={2} bgColor={userHoldPendingSortMethod == "format" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "format" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                            <SelectItem label={sortBy.status} value="status" key={3} bgColor={userHoldPendingSortMethod == "status" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "status" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                            <SelectItem label={sortBy.date_placed} value="placed" key={4} bgColor={userHoldPendingSortMethod == "placed" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "placed" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                            <SelectItem label={sortBy.position} value="position" key={5} bgColor={userHoldPendingSortMethod == "position" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "position" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                            <SelectItem label={sortBy.pickup_location} value="location" key={6} bgColor={userHoldPendingSortMethod == "location" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "location" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                            <SelectItem label={sortBy.library_account} value="libraryAccount" key={7} bgColor={userHoldPendingSortMethod == "libraryAccount" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "libraryAccount" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
                                                        </SelectContent>
                                                   </SelectPortal>
                                              </Select>
@@ -344,27 +366,26 @@ export const MyHolds = () => {
                                              defaultValue={userHoldPendingSortMethod}
                                              accessibilityLabel={getTermFromDictionary(language, 'select_sort_method')}
                                              onValueChange={(itemValue) => togglePendingSort(itemValue)}>
-                                             <SelectTrigger variant="outline" size="sm" borderWidth={colorMode === 'light' ? '$none' : '$1'}
-                                                            borderColor={colorMode === 'light' ? '$none' : theme['colors']['gray']['400']}>
-                                                  <SelectInput color={textColor} placeholder="Select option" />
+                                             <SelectTrigger variant="outline" size="sm">
+                                                  <SelectInput pt="$2" fontSize="$sm" color={textColor} value={pendingSortLabel()} />
                                                   <SelectIcon mr="$3">
                                                        <Icon color={textColor} as={ChevronDownIcon} />
                                                   </SelectIcon>
                                              </SelectTrigger>
                                              <SelectPortal>
                                                   <SelectBackdrop />
-                                                  <SelectContent>
+                                                  <SelectContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                                        <SelectDragIndicatorWrapper>
                                                             <SelectDragIndicator />
                                                        </SelectDragIndicatorWrapper>
-                                                       <SelectItem label={sortBy.title} value="sortTitle" key={0} />
-                                                       <SelectItem label={sortBy.author} value="author" key={1} />
-                                                       <SelectItem label={sortBy.format} value="format" key={2} />
-                                                       <SelectItem label={sortBy.status} value="status" key={3} />
-                                                       <SelectItem label={sortBy.date_placed} value="placed" key={4} />
-                                                       <SelectItem label={sortBy.position} value="position" key={5} />
-                                                       <SelectItem label={sortBy.pickup_location} value="location" key={6} />
-                                                       <SelectItem label={sortBy.library_account} value="libraryAccount" key={7} />
+                                                       <SelectItem label={sortBy.title} value="sortTitle" key={0} bgColor={userHoldPendingSortMethod == "sortTitle" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "sortTitle" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                       <SelectItem label={sortBy.author} value="author" key={1} bgColor={userHoldPendingSortMethod == "author" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "author" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                       <SelectItem label={sortBy.format} value="format" key={2} bgColor={userHoldPendingSortMethod == "format" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "format" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                       <SelectItem label={sortBy.status} value="status" key={3} bgColor={userHoldPendingSortMethod == "status" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "status" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                       <SelectItem label={sortBy.date_placed} value="placed" key={4} bgColor={userHoldPendingSortMethod == "placed" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "placed" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                       <SelectItem label={sortBy.position} value="position" key={5} bgColor={userHoldPendingSortMethod == "position" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "position" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                       <SelectItem label={sortBy.pickup_location} value="location" key={6} bgColor={userHoldPendingSortMethod == "location" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "location" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                       <SelectItem label={sortBy.library_account} value="libraryAccount" key={7} bgColor={userHoldPendingSortMethod == "libraryAccount" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldPendingSortMethod == "libraryAccount" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
                                                   </SelectContent>
                                              </SelectPortal>
                                         </Select>
@@ -375,6 +396,31 @@ export const MyHolds = () => {
                     </Box>
                );
           }
+
+          const readySortLabel = () => {
+               switch (userHoldReadySortMethod) {
+                    case "author":
+                         return sortBy.author;
+                    case "format":
+                         return sortBy.format;
+                    case "status":
+                         return sortBy.status;
+                    case "placed":
+                         return sortBy.date_placed;
+                    case "position":
+                         return sortBy.position;
+                    case "location":
+                         return sortBy.pickup_location;
+                    case "libraryAccount":
+                         return sortBy.library_account;
+                    case "sortTitle":
+                         return sortBy.title;
+                    case "expire":
+                         return sortBy.expiration;
+                    default:
+                         return getTermFromDictionary(language, 'select_sort_method');
+               }
+          };
 
           let readySortLength = 8 * sortBy.expiration.length + 80;
           if (userHoldReadySortMethod === 'author') {
@@ -409,26 +455,25 @@ export const MyHolds = () => {
                                              defaultValue={userHoldReadySortMethod}
                                              accessibilityLabel={getTermFromDictionary(language, 'select_sort_method')}
                                              onValueChange={(itemValue) => toggleReadySort(itemValue)}>
-                                             <SelectTrigger variant="outline" size="sm" borderWidth={colorMode === 'light' ? '$none' : '$1'}
-                                                            borderColor={colorMode === 'light' ? '$none' : theme['colors']['gray']['400']}>
-                                                  <SelectInput color={textColor} placeholder={getTermFromDictionary(language, 'select_sort_method')} />
+                                             <SelectTrigger variant="outline" size="sm">
+                                                  <SelectInput pt="$2" fontSize="$sm" color={textColor} value={readySortLabel()} />
                                                   <SelectIcon mr="$3">
                                                        <Icon color={textColor} as={ChevronDownIcon} />
                                                   </SelectIcon>
                                              </SelectTrigger>
                                              <SelectPortal>
                                                   <SelectBackdrop />
-                                                  <SelectContent>
+                                                  <SelectContent  bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                                        <SelectDragIndicatorWrapper>
                                                             <SelectDragIndicator />
                                                        </SelectDragIndicatorWrapper>
-                                                  <SelectItem label={sortBy.title} value="sortTitle" key={0} />
-                                                  <SelectItem label={sortBy.author} value="author" key={1} />
-                                                  <SelectItem label={sortBy.format} value="format" key={2} />
-                                                  <SelectItem label={sortBy.expiration} value="expire" key={3} />
-                                                  <SelectItem label={sortBy.date_placed} value="placed" key={4} />
-                                                  <SelectItem label={sortBy.pickup_location} value="location" key={5} />
-                                                  <SelectItem label={sortBy.library_account} value="libraryAccount" key={6} />
+                                                  <SelectItem label={sortBy.title} value="sortTitle" key={0} bgColor={userHoldReadySortMethod == "sortTitle" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldReadySortMethod == "sortTitle" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                  <SelectItem label={sortBy.author} value="author" key={1} bgColor={userHoldReadySortMethod == "author" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldReadySortMethod == "author" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
+                                                  <SelectItem label={sortBy.format} value="format" key={2}bgColor={userHoldReadySortMethod == "format" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldReadySortMethod == "format" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
+                                                  <SelectItem label={sortBy.expiration} value="expire" key={3} bgColor={userHoldReadySortMethod == "expire" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldReadySortMethod == "expire" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
+                                                  <SelectItem label={sortBy.date_placed} value="placed" key={4} bgColor={userHoldReadySortMethod == "placed" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldReadySortMethod == "placed" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
+                                                  <SelectItem label={sortBy.pickup_location} value="location" key={5} bgColor={userHoldReadySortMethod == "location" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldReadySortMethod == "location" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
+                                                  <SelectItem label={sortBy.library_account} value="libraryAccount" key={6} bgColor={userHoldReadySortMethod == "libraryAccount" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: userHoldReadySortMethod == "libraryAccount" ? theme['colors']['tertiary']['500-text'] : textColor } }} />
                                                   </SelectContent>
                                              </SelectPortal>
                                         </Select>
@@ -438,6 +483,23 @@ export const MyHolds = () => {
                     </Box>
                );
           }
+
+          const holdSourceLabel = () => {
+               switch (holdSource) {
+                   case "ils":
+                         return getTermFromDictionary(language, 'filter_by_ils') + " (" + (user.numHoldsRequestedIls ?? 0) + ")";
+                    case "overdrive":
+                         return filterByLibby + " (" + (user.numHoldsOverDrive ?? 0) + ")";
+                    case "cloud_library":
+                         return getTermFromDictionary(language, 'filter_by_cloud_library') + " (" + (user.numHolds_cloudLibrary ?? 0) + ")";
+                    case "axis360":
+                         return getTermFromDictionary(language, 'filter_by_boundless') + " (" + (user.numHolds_axis360 ?? 0) + ")";
+                    case "palace_project":
+                         return getTermFromDictionary(language, 'filter_by_palace_project') + " (" + (user.numHolds_PalaceProject ?? 0) + ")";
+                    default:
+                         return getTermFromDictionary(language, 'filter_by_all') + " (" + (user.numHolds ?? 0) + ")";
+               }
+          };
 
           return (
                <Box
@@ -463,27 +525,27 @@ export const MyHolds = () => {
                                         name="holdSource"
                                         selectedValue={holdSource}
                                         defaultValue={holdSource}
+                                        initialLabel="Test"
                                         accessibilityLabel="Filter By Source"
                                         onValueChange={(itemValue) => toggleHoldSource(itemValue)}>
-                                        <SelectTrigger variant="outline" size="sm" borderWidth={colorMode === 'light' ? '$none' : '$1'}
-                                                       borderColor={colorMode === 'light' ? '$none' : theme['colors']['gray']['400']}>
-                                             <SelectInput color={textColor}  placeholder="Filter By Source" />
+                                        <SelectTrigger variant="outline" size="sm">
+                                             <SelectInput pt="$2" fontSize="$sm" color={textColor} value={holdSourceLabel()} />
                                              <SelectIcon mr="$3">
                                                   <Icon color={textColor} as={ChevronDownIcon} />
                                              </SelectIcon>
                                         </SelectTrigger>
                                         <SelectPortal>
                                              <SelectBackdrop />
-                                             <SelectContent>
+                                             <SelectContent  bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                                   <SelectDragIndicatorWrapper>
                                                        <SelectDragIndicator />
                                                   </SelectDragIndicatorWrapper>
-                                                  <SelectItem label={getTermFromDictionary(language, 'filter_by_all') + ' (' + (user.numHolds ?? 0) + ')'} value="all" key={0} />
-                                                  <SelectItem label={getTermFromDictionary(language, 'filter_by_ils') + ' (' + (user.numHoldsRequestedIls ?? 0) + ')'} value="ils" key={1} />
-                                                  {user.isValidForOverdrive ? <SelectItem label={filterByLibby + ' (' + (user.numHoldsOverDrive ?? 0) + ')'} value="overdrive" key={2} /> : null}
-                                                  {user.isValidForCloudLibrary ? <SelectItem label={getTermFromDictionary(language, 'filter_by_cloud_library') + ' (' + (user.numHolds_cloudLibrary ?? 0) + ')'} value="cloud_library" key={3} /> : null}
-                                                  {user.isValidForAxis360 ? <SelectItem label={getTermFromDictionary(language, 'filter_by_boundless') + ' (' + (user.numHolds_axis360 ?? 0) + ')'} value="axis360" key={4} /> : null}
-                                                  {user.isValidForPalaceProject ? <SelectItem label={getTermFromDictionary(language, 'filter_by_palace_project') + ' (' + (user.numHolds_PalaceProject ?? 0) + ')'} value="palace_project" key={5} /> : null}
+                                                  <SelectItem label={getTermFromDictionary(language, 'filter_by_all') + ' (' + (user.numHolds ?? 0) + ')'} value="all" key={0}  bgColor={holdSource == "all" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: holdSource == "all" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
+                                                  <SelectItem label={getTermFromDictionary(language, 'filter_by_ils') + ' (' + (user.numHoldsRequestedIls ?? 0) + ')'} value="ils" key={1}  bgColor={holdSource == "ils" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: holdSource == "ils" ? theme['colors']['tertiary']['500-text'] : textColor } }}/>
+                                                  {user.isValidForOverdrive ? <SelectItem label={filterByLibby + ' (' + (user.numHoldsOverDrive ?? 0) + ')'} value="overdrive" key={2}  bgColor={holdSource == "overdrive" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: holdSource == "overdrive" ? theme['colors']['tertiary']['500-text'] : textColor } }} /> : null}
+                                                  {user.isValidForCloudLibrary ? <SelectItem label={getTermFromDictionary(language, 'filter_by_cloud_library') + ' (' + (user.numHolds_cloudLibrary ?? 0) + ')'} value="cloud_library" key={3}  bgColor={holdSource == "cloud_library" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: holdSource == "cloud_library" ? theme['colors']['tertiary']['500-text'] : textColor } }}/> : null}
+                                                  {user.isValidForAxis360 ? <SelectItem label={getTermFromDictionary(language, 'filter_by_boundless') + ' (' + (user.numHolds_axis360 ?? 0) + ')'} value="axis360" key={4}  bgColor={holdSource == "axis360" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: holdSource == "axis360" ? theme['colors']['tertiary']['500-text'] : textColor } }}/> : null}
+                                                  {user.isValidForPalaceProject ? <SelectItem label={getTermFromDictionary(language, 'filter_by_palace_project') + ' (' + (user.numHolds_PalaceProject ?? 0) + ')'} value="palace_project" key={5}  bgColor={holdSource == "palace_project" ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: holdSource == "palace_project" ? theme['colors']['tertiary']['500-text'] : textColor } }}/> : null}
                                              </SelectContent>
                                         </SelectPortal>
                                    </Select>

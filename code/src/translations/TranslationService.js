@@ -4,7 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { Box, Button, ButtonText, ButtonIcon, Menu, MenuItem, MenuItemLabel, Pressable } from '@gluestack-ui/themed';
 import React from 'react';
-import { LanguageContext, LibrarySystemContext } from '../context/initialContext';
+import { LanguageContext, LibrarySystemContext, ThemeContext } from '../context/initialContext';
 import { saveLanguage } from '../util/api/user';
 
 import { createAuthTokens, decodeHTML, getHeaders } from '../util/apiAuth';
@@ -16,6 +16,7 @@ import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from
  * General
  ******************************************************************* **/
 export const LanguageSwitcher = () => {
+     const { theme, colorMode, textColor } = React.useContext(ThemeContext);
      const { library } = React.useContext(LibrarySystemContext);
      const { language, updateLanguage, languages, updateDictionary, languageDisplayName, updateLanguageDisplayName } = React.useContext(LanguageContext);
      const [label, setLabel] = React.useState(getLanguageDisplayName(language, languages));
@@ -39,15 +40,15 @@ export const LanguageSwitcher = () => {
           return (
                <Box>
                     <Menu
+                         bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}
                          closeOnSelect
                          placement="top"
-                         w="190"
                          selectedKeys={language} selectionMode="single" onSelectionChange={(val) => changeLanguage(val)}
                          trigger={(triggerProps) => {
                               return (
-                                   <Button size="sm" variant="link" colorScheme="secondary" {...triggerProps}>
-                                        <ButtonIcon as={MaterialIcons} name="language" />
-                                        <ButtonText>{languageDisplayName}</ButtonText>
+                                   <Button size="sm" variant="link" {...triggerProps}>
+                                        <ButtonIcon as={MaterialIcons} name="language" color={theme['colors']['secondary']['500']} />
+                                        <ButtonText color={theme['colors']['secondary']['500']}>{languageDisplayName}</ButtonText>
                                    </Button>
                               );
                          }}>
@@ -56,7 +57,7 @@ export const LanguageSwitcher = () => {
                                    {languages.map((language, index) => {
                                         return (
                                              <MenuItem key={language.code} textValue={language.code}>
-                                                  <MenuItemLabel>{language.displayName}</MenuItemLabel>
+                                                  <MenuItemLabel color={textColor}>{language.displayName}</MenuItemLabel>
                                              </MenuItem>
                                         );
                                    })}

@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { getTermFromDictionary } from '../../../translations/TranslationService';
 
 export const SelectItemHold = (props) => {
-     const { id, data, item, setItem, setHoldType, showModal, holdTypeForFormat, language, url, textColor, theme } = props;
+     const { id, data, item, setItem, setHoldType, showModal, holdTypeForFormat, language, url, textColor, theme, colorMode } = props;
 
      let holdType = props.holdType;
      let copies = data.copies;
@@ -68,7 +68,7 @@ export const SelectItemHold = (props) => {
                               </SelectTrigger>
                               <SelectPortal useRNModal={true}>
                                    <SelectBackdrop />
-                                   <SelectContent p="$5">
+                                   <SelectContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                         <SelectDragIndicatorWrapper>
                                              <SelectDragIndicator />
                                         </SelectDragIndicatorWrapper>
@@ -76,9 +76,9 @@ export const SelectItemHold = (props) => {
                                              {_.map(Object.keys(copies), function (item, index, array) {
                                                   let copy = copies[item];
                                                   if (copy.id === defaultItem) {
-                                                       return <SelectItem label={copy.location} value={copy.id} key={copy.id} bgColor={theme['colors']['tertiary']['300']} />;
+                                                       return <SelectItem label={copy.location} value={copy.id} key={copy.id} bgColor={theme['colors']['tertiary']['300']}  sx={{ _text: { color: theme['colors']['tertiary']['500-text']} }}/>;
                                                   }
-                                                  return <SelectItem label={copy.location} value={copy.id} key={copy.id} />;
+                                                  return <SelectItem label={copy.location} value={copy.id} key={copy.id} sx={{ _text: { color: textColor } }} />;
                                              })}
                                         </SelectScrollView>
                                    </SelectContent>

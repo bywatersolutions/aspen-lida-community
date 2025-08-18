@@ -14,15 +14,16 @@ import { createAuthTokens, getHeaders, postData, problemCodeMap, stripHTML } fro
 import { GLOBALS } from '../util/globals';
 import { popAlert, popToast } from './loadError';
 
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../util/logging.js';
+
 export async function registerForPushNotificationsAsync(url) {
-     console.log('url: ' + url);
      let token = false;
      let checkPermissionsManually = false;
      if (Device.isDevice) {
-          console.log(Platform.OS);
+          logDebugMessage("Platform OS is : " + Platform.OS);
           if (Platform.OS === 'android') {
                await createChannelsAndCategories();
-               console.log(Device.osVersion);
+               logDebugMessage("Device OS Version is : " + Device.osVersion);
                if (Device.osVersion < 13) {
                     checkPermissionsManually = true;
                }
@@ -32,7 +33,7 @@ export async function registerForPushNotificationsAsync(url) {
 
           if (checkPermissionsManually) {
                const { status: existingStatus } = await Notifications.getPermissionsAsync();
-               console.log('status: ' + existingStatus);
+               logDebugMessage('Notification status is: ' + existingStatus);
                let finalStatus = existingStatus;
                if (existingStatus !== 'granted') {
                     if (Platform.OS !== 'android') {
@@ -41,7 +42,7 @@ export async function registerForPushNotificationsAsync(url) {
                     }
                }
                if (finalStatus !== 'granted') {
-                    console.log('Failed to get push token for push notification!');
+                    logWarnMessage('Failed to get push token for push notification!');
                     return false;
                }
           }
@@ -53,23 +54,21 @@ export async function registerForPushNotificationsAsync(url) {
                     })
                ).data;
           } catch (e) {
-               console.log(e);
+               logErrorMessage("Error getting push token");
+               logErrorMessage(e);
                return false;
           }
 
-          console.log('token: ' + token);
+          logDebugMessage('token: ' + token);
 
           if (token) {
                await savePushToken(url, token);
           }
      } else {
-          console.log('Creating a fake token for simulators...');
-          token = (
-               await Notifications.getExpoPushTokenAsync({
-                    projectId: Constants.expoConfig.extra.eas.projectId,
-               })
-          ).data;
-          console.log('token: ' + token);
+          logDebugMessage('Creating a fake token for simulators...');
+          token = await Notifications.getExpoPushTokenAsync({
+               projectId: Constants.expoConfig.extra.eas.projectId,
+          });
           return token;
      }
 
@@ -106,7 +105,8 @@ export async function getPushToken(libraryUrl) {
                return [];
           }
      } else {
-          console.log(response);
+          logWarnMessage("Could not retrieve push tokens");
+          logWarnMessage(response);
           return [];
      }
 }
@@ -193,18 +193,21 @@ export async function getNotificationPreferences(libraryUrl, pushToken) {
           headers: getHeaders(true),
           auth: createAuthTokens(),
      });
+     logDebugMessage("Loading notification preferences");
      const response = await api.post('/UserAPI?method=getNotificationPreferences', postBody);
      if (response.ok) {
           try {
                await createChannelsAndCategories();
           } catch (e) {
-               console.log(e);
+               logErrorMessage("Could not create channels and categories");
+               logErrorMessage(e);
           }
           return response.data.result;
      } else {
           const problem = problemCodeMap(response.problem);
           popToast(problem.title, problem.message, 'error');
-          console.log(response);
+          logWarnMessage("Could not retrieve notification preferences");
+          logWarnMessage(response);
           return false;
      }
 }
@@ -222,6 +225,7 @@ export async function getNotificationPreference(url, pushToken, type) {
                type: type,
           },
      });
+     logDebugMessage("Getting notification preference")
      const response = await api.post('/UserAPI?method=getNotificationPreference', postBody);
      if (response.ok) {
           if (response.data.result.success === true) {
@@ -233,7 +237,6 @@ export async function getNotificationPreference(url, pushToken, type) {
      } else {
           const problem = problemCodeMap(response.problem);
           popToast(problem.title, problem.message, 'error');
-          //console.log(response);
           return false;
      }
 }
@@ -258,7 +261,7 @@ export async function setNotificationPreference(url, pushToken, type, value, sho
 }
 
 export async function createChannelsAndCategories() {
-     console.log('Creating channels and categories for notifications...');
+     logDebugMessage('Creating channels and categories for notifications...');
      const updatesChannelGroup = await getNotificationChannelGroup('updates');
      if (!updatesChannelGroup) {
           await createNotificationChannelGroup('updates', 'Updates');

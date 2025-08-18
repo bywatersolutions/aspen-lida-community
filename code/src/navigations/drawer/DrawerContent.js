@@ -27,7 +27,7 @@ import { fetchSavedEvents } from '../../util/api/event';
 import { getCatalogStatus } from '../../util/api/library';
 import { getLists } from '../../util/api/list';
 import { getLocations } from '../../util/api/location';
-import { fetchNotificationHistory, fetchReadingHistory, fetchSavedSearches, getLinkedAccounts, getPatronCheckedOutItems, sortCheckouts, getPatronHolds, sortHolds, getViewerAccounts, reloadProfile, revalidateUser, validateSession } from '../../util/api/user';
+import { fetchNotificationHistory, fetchReadingHistory, fetchSavedSearches, getLinkedAccounts, getPatronCheckedOutItems, sortCheckouts, getPatronHolds, sortHolds, getViewerAccounts, refreshProfile, reloadProfile, revalidateUser, validateSession } from '../../util/api/user';
 import { passUserToDiscovery } from '../../util/apiAuth';
 import { GLOBALS } from '../../util/globals';
 import { formatDiscoveryVersion, getPickupLocations, reloadBrowseCategories } from '../../util/loadLibrary';
@@ -107,14 +107,16 @@ export const DrawerContent = () => {
           },
      });
 
-     useQuery(['user', library.baseUrl, language], () => reloadProfile(library.baseUrl), {
+     //MDN 25.08 DIS-276 Change to use refresh profile rather than reload profile because it utilizes caching within
+     //Aspen Discovery to return results as quickly as possible.
+     useQuery(['user', library.baseUrl, language], () => refreshProfile(library.baseUrl), {
           initialData: user,
           refetchInterval: 60 * 1000 * 5,
           refetchIntervalInBackground: true,
           refetchOnWindowFocus: 'always',
           onSuccess: (data) => {
                const validProfile = data.success ?? true;
-               if(validProfile) {
+               if (validProfile) {
                     setInvalidSession(false);
                     if (user) {
                          if (data !== user) {
@@ -128,10 +130,14 @@ export const DrawerContent = () => {
                          PATRON.language = data.interfaceLanguage ?? 'en';
                     }
                } else {
-                    // no profile returned, invalid user
-                    logWarnMessage("Session was invalid reloading profile");
-                    logWarnMessage(data);
-                    setInvalidSession(true);
+                    //MDN 25.08 DIS-276 Change to use refresh profile rather than reload profile because it utilizes caching within
+                    errorFetching = data.errorFetching ?? false;
+                    //If we had an error fetching data, do not force the user out
+                    if (errorFetching === false) {
+                         logWarnMessage("Session was invalid after reloading profile");
+                         logWarnMessage(data);
+                         setInvalidSession(true);
+                    }
                }
           },
      });
@@ -372,6 +378,7 @@ export const DrawerContent = () => {
      }
 
      if (invalidSession === true || invalidSession === 'true') {
+          logDebugMessage("Session is invalid, preparing to show invalid credentials alert");
           return <InvalidCredentials />;
      }
 

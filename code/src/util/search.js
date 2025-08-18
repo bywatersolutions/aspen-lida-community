@@ -9,6 +9,7 @@ import { createAuthTokens, ENDPOINT, getHeaders, getResponseCode, postData } fro
 import { GLOBALS } from './globals';
 import { LIBRARY } from './loadLibrary';
 import { PATRON } from './loadPatron';
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from './logging.js';
 
 export const SEARCH = {
      term: null,
@@ -35,7 +36,8 @@ export async function searchResults(searchTerm, pageSize = 100, page, libraryUrl
           try {
                solrScope = await AsyncStorage.getItem('@solrScope');
           } catch (e) {
-               console.log(e);
+               logErrorMessage("Could not get solr scope");
+               logErrorMessage(e);
           }
      }
 
@@ -59,7 +61,8 @@ export async function searchResults(searchTerm, pageSize = 100, page, libraryUrl
           return response;
      } else {
           popToast(getTermFromDictionary('en', 'error_no_server_connection'), getTermFromDictionary('en', 'error_no_library_connection'), 'error');
-          console.log(response);
+          logErrorMessage("Got an invalid response from getAppSearchResults");
+          logErrorMessage(response);
           return response;
      }
 }
@@ -249,7 +252,8 @@ export async function searchAvailableFacets(facet, label, term, url, language) {
                }
           );
      } else {
-          //console.log(response);
+          logWarnMessage("Did not get a good response searching available facets");
+          logWarnMessage(response);
      }
      return {
           success: false,
@@ -313,7 +317,8 @@ export async function categorySearchResults(category, limit = 25, page, url, lan
      if (response.ok) {
           return response;
      } else {
-          console.log(response);
+          logWarnMessage("Got an invalid response from getAppBrowseCategoryResults");
+          logWarnMessage(response);
           return response;
      }
 }
@@ -339,7 +344,8 @@ export async function listofListSearchResults(searchId, limit = 25, page, url, l
      if (response.ok) {
           return response.data.result;
      } else {
-          console.log(response);
+          logWarnMessage("Got an invalid response from getListResults");
+          logWarnMessage(response);
           return response;
      }
 }
@@ -370,7 +376,8 @@ export async function savedSearchResults(searchId, limit = 25, page, url, langua
      if (response.ok) {
           return response;
      } else {
-          console.log(response);
+          logWarnMessage("Got an invalid response from getSavedSearchResults");
+          logWarnMessage(response);
           return response;
      }
 }
@@ -407,9 +414,6 @@ export function buildParamsForUrl() {
      _.forEach(filters, function (filter) {
           const field = filter.field;
           const facets = filter.facets;
-          if (field === 'sort_by') {
-               //console.log(filter);
-          }
           if (_.size(facets) > 0) {
                _.forEach(facets, function (facet) {
                     if (field === 'sort_by') {
@@ -431,8 +435,7 @@ export function buildParamsForUrl() {
 
      params = _.join(params, '');
      SEARCH.appendedParams = params;
-     console.log('buildParamsForUrl: ');
-     console.log(params);
+     logDebugMessage('buildParamsForUrl: ' + params);
      return params;
 }
 
@@ -523,6 +526,7 @@ export function getAppliedFacets(cluster) {
 export function addAppliedFilter(group, values, multiSelect = false) {
      if (group) {
           if (_.isArray(values) || _.isObject(values)) {
+               logDebugMessage("Adding applied filters from object/array " + values);
                _.forEach(values, function (value) {
                     const i = _.findIndex(SEARCH.pendingFilters, ['field', group]);
                     if (i !== -1) {
@@ -532,12 +536,14 @@ export function addAppliedFilter(group, values, multiSelect = false) {
                               SEARCH.pendingFilters[i]['facets'] = _.castArray(value);
                          }
                          SEARCH.pendingFilters[i]['facets'] = _.uniqWith(SEARCH.pendingFilters[i]['facets'], _.isEqual);
-                         console.log('Added ' + value + ' to ' + group + ' (multiSelect: ' + multiSelect + ')');
-                         buildParamsForUrl();
-                         return true;
+                         logDebugMessage('Added ' + value + ' to ' + group + ' (multiSelect: ' + multiSelect + ')');
                     }
                });
+               logDebugMessage("Done adding applied filters from object/array");
+               buildParamsForUrl();
+               return true;
           } else {
+               logDebugMessage("Adding applied filters from single value");
                const i = _.findIndex(SEARCH.pendingFilters, ['field', group]);
                if (i !== -1) {
                     if (multiSelect) {
@@ -546,7 +552,7 @@ export function addAppliedFilter(group, values, multiSelect = false) {
                          SEARCH.pendingFilters[i]['facets'] = _.castArray(values);
                     }
                     SEARCH.pendingFilters[i]['facets'] = _.uniqWith(SEARCH.pendingFilters[i]['facets'], _.isEqual);
-                    console.log('Added ' + values + ' to ' + group + ' (multiSelect: ' + multiSelect + ')');
+                    logDebugMessage('Added ' + values + ' to ' + group + ' (multiSelect: ' + multiSelect + ')');
                     buildParamsForUrl();
                     return true;
                }
@@ -562,7 +568,7 @@ export function removeAppliedFilter(group, values) {
                     const i = _.findIndex(SEARCH.pendingFilters, ['field', group]);
                     if (i !== -1) {
                          SEARCH.pendingFilters[i]['facets'] = _.pull(SEARCH.pendingFilters[i]['facets'], value);
-                         console.log('Removed ' + value + ' from ' + group);
+                         logDebugMessage('Removed ' + value + ' from ' + group);
                          buildParamsForUrl();
                          return true;
                     }
@@ -571,7 +577,7 @@ export function removeAppliedFilter(group, values) {
                const i = _.findIndex(SEARCH.pendingFilters, ['field', group]);
                if (i !== -1) {
                     SEARCH.pendingFilters[i]['facets'] = _.pull(SEARCH.pendingFilters[i]['facets'], values);
-                    console.log('Removed ' + values + ' from ' + group);
+                    logDebugMessage('Removed ' + values + ' from ' + group);
                     buildParamsForUrl();
                     return true;
                }
@@ -601,5 +607,5 @@ export function resetSearchGlobals() {
      SEARCH.availableFacets = [];
      SEARCH.pendingFilters = [];
      SEARCH.appendedParams = '';
-     console.log('Reset global search variables');
+     logDebugMessage('Reset global search variables');
 }

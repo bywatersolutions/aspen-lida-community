@@ -7,7 +7,7 @@ import { getTermFromDictionary } from '../../../translations/TranslationService'
 import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../../util/logging.js';
 
 export const SelectNewHoldSublocation = (props) => {
-     const {sublocations, location, activeSublocation, setActiveSublocation, language, textColor, theme} = props;
+     const {sublocations, location, activeSublocation, setActiveSublocation, language, textColor, theme, colorMode} = props;
 
      if (sublocations !== undefined) {
           try {
@@ -62,16 +62,16 @@ export const SelectNewHoldSublocation = (props) => {
                                              </SelectTrigger>
                                              <SelectPortal useRNModal={true}>
                                                   <SelectBackdrop />
-                                                  <SelectContent p="$5">
+                                                  <SelectContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                                        <SelectDragIndicatorWrapper>
                                                             <SelectDragIndicator />
                                                        </SelectDragIndicatorWrapper>
                                                        <SelectScrollView>
                                                             {validSublocations.map((sublocation, index) => {
                                                                  if (sublocation.id === activeSublocation) {
-                                                                      return <SelectItem label={sublocation.displayName} value={sublocation.id} key={index} bgColor={theme['colors']['tertiary']['300']} />;
+                                                                      return <SelectItem label={sublocation.displayName} value={sublocation.id} key={index} bgColor={theme['colors']['tertiary']['300']} sx={{ _text: { color: theme['colors']['tertiary']['500-text']} }} />;
                                                                  }
-                                                                 return <SelectItem label={sublocation.displayName} value={sublocation.id} key={index} color={textColor} />;
+                                                                 return <SelectItem label={sublocation.displayName} value={sublocation.id} key={index} sx={{ _text: { color: textColor } }} />;
                                                             })}
                                                        </SelectScrollView>
                                                   </SelectContent>

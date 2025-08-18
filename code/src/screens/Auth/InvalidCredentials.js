@@ -1,31 +1,37 @@
-import { AlertDialog, Button, Center } from '@gluestack-ui/themed-native-base';
+import { Center, AlertDialog, AlertDialogBackdrop, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Button, ButtonGroup, ButtonText, Heading, Text } from '@gluestack-ui/themed';
+
 import React from 'react';
 
-import { AuthContext } from '../../components/navigation';
-import { LanguageContext } from '../../context/initialContext';
-import { getTermFromDictionary } from '../../translations/TranslationService';
+import {AuthContext} from '../../components/navigation';
+import {LanguageContext, ThemeContext} from '../../context/initialContext';
+import {getTermFromDictionary} from '../../translations/TranslationService';
+
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../util/logging.js';
 
 export const InvalidCredentials = () => {
+     const { theme, colorMode, textColor } = React.useContext(ThemeContext);
      const { language } = React.useContext(LanguageContext);
      const { signOut } = React.useContext(AuthContext);
      const [isOpen, setIsOpen] = React.useState(true);
      const onClose = () => setIsOpen(false);
      const cancelRef = React.useRef(null);
+     logDebugMessage('Showing Invalid Credentials Alert');
 
      return (
           <Center>
                <AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose}>
-                    <AlertDialog.Content>
-                         <AlertDialog.Header>{getTermFromDictionary(language, 'error')}</AlertDialog.Header>
-                         <AlertDialog.Body>{getTermFromDictionary(language, 'error_invalid_credentials')}</AlertDialog.Body>
-                         <AlertDialog.Footer>
-                              <Button.Group space={3}>
-                                   <Button colorScheme="primary" onPress={signOut} ref={cancelRef}>
-                                        {getTermFromDictionary(language, 'button_ok')}
+                    <AlertDialogBackdrop/>
+                    <AlertDialogContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
+                         <AlertDialogHeader><Heading color={textColor}>{getTermFromDictionary(language, 'error')}</Heading></AlertDialogHeader>
+                         <AlertDialogBody><Text color={textColor}>{getTermFromDictionary(language, 'error_invalid_credentials')}</Text></AlertDialogBody>
+                         <AlertDialogFooter>
+                              <ButtonGroup space="sm">
+                                   <Button bgColor={theme['colors']['primary']['500']} onPress={signOut} ref={cancelRef}>
+                                        <ButtonText color={theme['colors']['primary']['500-text']}>{getTermFromDictionary(language, 'button_ok')}</ButtonText>
                                    </Button>
-                              </Button.Group>
-                         </AlertDialog.Footer>
-                    </AlertDialog.Content>
+                              </ButtonGroup>
+                         </AlertDialogFooter>
+                    </AlertDialogContent>
                </AlertDialog>
           </Center>
      );

@@ -24,6 +24,9 @@ import { SelectYourLibrary } from './SelectYourLibrary';
 import { SelfRegistration } from './SelfRegistration';
 import { SplashScreen } from './Splash';
 import { createGlueTheme } from '../../themes/theme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const LoginScreen = () => {
      const [isLoading, setIsLoading] = React.useState(true);
@@ -49,7 +52,9 @@ export const LoginScreen = () => {
      const [enableSelfRegistration, setEnableSelfRegistration] = React.useState(false);
      const [selfRegistrationFields, setSelfRegistrationFields] = React.useState([]);
      const { updateLibrary } = React.useContext(LibrarySystemContext);
-     const { theme, colorMode, textColor, updateTheme } = React.useContext(ThemeContext);
+     const { theme, colorMode, textColor, updateTheme, updateColorMode } = React.useContext(ThemeContext);
+     const insets = useSafeAreaInsets();
+
      let isCommunity = true;
      if (!_.includes(GLOBALS.slug, 'aspen-lida') || GLOBALS.slug === 'aspen-lida-bws') {
           isCommunity = false;
@@ -80,6 +85,14 @@ export const LoginScreen = () => {
                               if (!result.shouldShowSelectLibrary) {
                                    updateSelectedLibrary(result.libraries[0]);
                               }
+                         }
+                    });
+
+                    await AsyncStorage.getItem('@colorMode').then(async (mode) => {
+                         if (mode === 'light' || mode === 'dark') {
+                              updateColorMode(mode);
+                         } else {
+                              updateColorMode('light');
                          }
                     });
 
@@ -151,20 +164,6 @@ export const LoginScreen = () => {
                     }
                }
           });
-          /*await getLibraryLoginLabels(data.libraryId, data.baseUrl).then(async (labels) => {
-		 try {
-		 const username = await getTranslation('Your Name', 'en', data.baseUrl);
-		 const password = await getTranslation('Library Card Number', 'en', data.baseUrl);
-		 if (username !== 'Your Name') {
-		 setUsernameLabel(username);
-		 }
-		 if (password !== 'Library Card Number') {
-		 setPasswordLabel(password);
-		 }
-		 } catch (e) {
-		 // couldn't fetch translated login terms for some reason, just use the default as backup
-		 }
-		 });*/
           setShowModal(false);
      };
 
@@ -177,7 +176,7 @@ export const LoginScreen = () => {
      }
 
      return (
-          <Box flex={1} alignItems="center" justifyContent="center" p="$5">
+          <Box flex={1} alignItems="center" justifyContent="center" pl="$5" pr="$5" mb={insets.top} mt={insets.bottom} ml={insets.left} mr={insets.right}>
                <Image source={{ uri: logoImage }} rounded={25} size="xl" alt="" fallbackSource={require('../../themes/default/aspenLogo.png')} />
                {isCommunity || shouldShowSelectLibrary ? <SelectYourLibrary updateSelectedLibrary={updateSelectedLibrary} selectedLibrary={selectedLibrary} query={query} setQuery={setQuery} showModal={showModal} setShowModal={setShowModal} isCommunity={isCommunity} setShouldRequestPermissions={setShouldRequestPermissions} shouldRequestPermissions={shouldRequestPermissions} permissionRequested={permissionRequested} libraries={libraries} allLibraries={allLibraries} /> : null}
                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'padding'} width="100%">

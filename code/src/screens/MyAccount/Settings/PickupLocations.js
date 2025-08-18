@@ -43,7 +43,7 @@ export const Settings_PickupLocations = () => {
 	const { library } = React.useContext(LibrarySystemContext);
 	const { language } = React.useContext(LanguageContext);
 	const { user, updateUser, locations } = React.useContext(UserContext);
-	const { theme, textColor } = React.useContext(ThemeContext);
+	const { theme, textColor, colorMode } = React.useContext(ThemeContext);
 
 	let userPickupLocationId = user.pickupLocationId ?? user.homeLocationId;
 	let userPickupLocation1Id = user.myLocation1Id ?? "";
@@ -135,12 +135,8 @@ export const Settings_PickupLocations = () => {
 					selectedValue={location}
 					minWidth="200"
 					accessibilityLabel={getTermFromDictionary(language, 'select_pickup_location')}
-					_selectedItem={{
-						bg: 'tertiary.300',
-						endIcon: <CheckIcon size="5" />,
-					}}
-					mt={1}
-					mb={2}
+					mt="$1"
+					mb="$2"
 					onValueChange={(itemValue) => setLocation(itemValue)}>
 					<SelectTrigger variant="outline" size="md">
 						{selectedLocationObj ? (
@@ -152,18 +148,18 @@ export const Settings_PickupLocations = () => {
 					</SelectTrigger>
 					<SelectPortal>
 						<SelectBackdrop />
-						<SelectContent p="$5">
+						<SelectContent  bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
 							<SelectDragIndicatorWrapper>
 								<SelectDragIndicator />
 							</SelectDragIndicatorWrapper>
-							<SelectScrollView>
 								{locations.map((availableLocations, index) => {
 									if (availableLocations.code === location) {
-										return <SelectItem label={availableLocations.name} value={availableLocations.code} key={index} bgColor={theme['colors']['tertiary']['300']} />;
+										return <SelectItem label={availableLocations.name} value={availableLocations.code} key={index} bgColor={theme['colors']['tertiary']['300']} sx={{ _text: { color: theme['colors']['tertiary']['500-text'] } }} />;
 									}
-									return <SelectItem label={availableLocations.name} value={availableLocations.code} key={index} />;
+									return <SelectItem label={availableLocations.name} value={availableLocations.code} key={index} sx={{
+										_text: { color: textColor }
+									}} />;
 								})}
-							</SelectScrollView>
 						</SelectContent>
 					</SelectPortal>
 				</Select>
@@ -177,14 +173,9 @@ export const Settings_PickupLocations = () => {
 					<Select
 						name="pickupLocations1"
 						selectedValue={location1Id}
-						minWidth="200"
 						accessibilityLabel={getTermFromDictionary(language, 'select_pickup_location')}
-						_selectedItem={{
-							bg: 'tertiary.300',
-							endIcon: <CheckIcon size="5" />,
-						}}
-						mt={1}
-						mb={2}
+						mt="$1"
+						mb="$2"
 						onValueChange={(itemValue) => setLocation1Id(itemValue)}>
 						<SelectTrigger variant="outline" size="md">
 							{selectedLocation1Obj ? (
@@ -194,20 +185,20 @@ export const Settings_PickupLocations = () => {
 							)}
 							<SelectIcon mr="$3" as={ChevronDownIcon} color={textColor} />
 						</SelectTrigger>
-						<SelectPortal>
+						<SelectPortal useRNModal={true}>
 							<SelectBackdrop />
-							<SelectContent p="$5">
+							<SelectContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
 								<SelectDragIndicatorWrapper>
 									<SelectDragIndicator />
 								</SelectDragIndicatorWrapper>
-								<SelectScrollView>
 									{locations.map((availableLocations, index) => {
 										if (availableLocations.code === location1Id) {
-											return <SelectItem label={availableLocations.name} value={availableLocations.code} key={index} bgColor={theme['colors']['tertiary']['300']} />;
+											return <SelectItem label={availableLocations.name} value={availableLocations.code} key={index} bgColor={theme['colors']['tertiary']['300']} sx={{ _text: { color: theme['colors']['tertiary']['500-text'] } }} />;
 										}
-										return <SelectItem label={availableLocations.name} value={availableLocations.code} key={index} />;
+										return <SelectItem label={availableLocations.name} value={availableLocations.code} key={index} sx={{
+											_text: { color: textColor }
+										}} />;
 									})}
-								</SelectScrollView>
 							</SelectContent>
 						</SelectPortal>
 					</Select>
@@ -219,14 +210,9 @@ export const Settings_PickupLocations = () => {
 					<Select
 						name="pickupLocation2"
 						selectedValue={location2Id}
-						minWidth="200"
 						accessibilityLabel={getTermFromDictionary(language, 'select_pickup_location')}
-						_selectedItem={{
-							bg: 'tertiary.300',
-							endIcon: <CheckIcon size="5" />,
-						}}
-						mt={1}
-						mb={2}
+						mt="$1"
+						mb="$2"
 						onValueChange={(itemValue) => setLocation2Id(itemValue)}>
 						<SelectTrigger variant="outline" size="md">
 							{selectedLocation2Obj ? (
@@ -238,25 +224,25 @@ export const Settings_PickupLocations = () => {
 						</SelectTrigger>
 						<SelectPortal>
 							<SelectBackdrop />
-							<SelectContent p="$5">
+							<SelectContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
 								<SelectDragIndicatorWrapper>
 									<SelectDragIndicator />
 								</SelectDragIndicatorWrapper>
-								<SelectScrollView>
 									{locations.map((availableLocations, index) => {
 										if (availableLocations.code === location2Id) {
-											return <SelectItem label={availableLocations.name} value={availableLocations.code} key={index} bgColor={theme['colors']['tertiary']['300']} />;
+											return <SelectItem label={availableLocations.name} value={availableLocations.code} key={index} bgColor={theme['colors']['tertiary']['300']} sx={{ _text: { color: theme['colors']['tertiary']['500-text'] } }} />;
 										}
-										return <SelectItem label={availableLocations.name} value={availableLocations.code} key={index} />;
+										return <SelectItem label={availableLocations.name} value={availableLocations.code} key={index} sx={{
+											_text: { color: textColor }
+										}} />;
 									})}
-								</SelectScrollView>
 							</SelectContent>
 						</SelectPortal>
 					</Select>
 				</FormControl>
 			</>
 			) : null}
-			<SelectNewHoldSublocation sublocations={PATRON.sublocations} location={location} activeSublocation={sublocation} setActiveSublocation={setSublocation} language={language} textColor={textColor} theme={theme} />
+			<SelectNewHoldSublocation sublocations={PATRON.sublocations} location={location} activeSublocation={sublocation} setActiveSublocation={setSublocation} language={language} textColor={textColor} theme={theme} colorMode={colorMode} />
 			{library.allowRememberPickupLocation ? (
 				<FormControl mb="$3">
 					<Checkbox
