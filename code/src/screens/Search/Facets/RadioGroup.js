@@ -1,16 +1,16 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import _ from 'lodash';
 import { HStack, Icon, Pressable, Text, VStack } from 'native-base';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { addAppliedFilter, removeAppliedFilter, SEARCH } from '../../../util/search';
 
-const Facet_RadioGroup = ({ title, data, category, updater, applied }) => {
-     const [isLoading, setIsLoading] = useState(true);
-     const [value, setValue] = useState('');
-     const [pending] = useState(SEARCH.pendingFilters);
+export const Facet_RadioGroup = ({ title, data, category, updater, applied }) => {
+     const [isLoading, setIsLoading] = React.useState(true);
+     const [value, setValue] = React.useState('');
+     const [pending] = React.useState(SEARCH.pendingFilters);
 
-     useEffect(() => {
+     React.useEffect(() => {
           const facets = data;
           if (_.isObject(facets)) {
                const facet = _.filter(facets, 'isApplied');
@@ -21,7 +21,7 @@ const Facet_RadioGroup = ({ title, data, category, updater, applied }) => {
           setIsLoading(false);
      }, [data]);
 
-     useEffect(() => {
+     React.useEffect(() => {
           if (value !== applied) {
                console.log('prevValue', value);
                console.log('applied', applied);
@@ -108,5 +108,3 @@ const Facet_RadioGroup = ({ title, data, category, updater, applied }) => {
           </VStack>
      );
 };
-
-export default Facet_RadioGroup;

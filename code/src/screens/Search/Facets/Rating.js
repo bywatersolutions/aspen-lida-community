@@ -1,21 +1,18 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import _ from 'lodash';
 import { HStack, Icon, Pressable, Text, VStack } from 'native-base';
-import React, { useState, useEffect, useContext } from 'react';
+import React from 'react';
 import { ScrollView } from 'react-native';
 import Stars from 'react-native-stars';
 
 // custom components and helper files
 import { LoadingSpinner } from '../../../components/loadingSpinner';
-import { userContext } from '../../../context/user';
 import { addAppliedFilter, removeAppliedFilter } from '../../../util/search';
 
-const Facet_Rating = ({ data, category, updater }) => {
-     const user = useContext(userContext);
-     const [isLoading, setIsLoading] = useState(true);
-     const [appliedRating, setAppliedRating] = useState('');
-     const [value, setValue] = useState('');
-     const [stars] = useState([
+export const Facet_Rating = ({ data, category, updater }) => {
+     const [isLoading, setIsLoading] = React.useState(true);
+     const [value, setValue] = React.useState('');
+     const [stars] = React.useState([
           {
                label: 'fiveStar',
                value: '5',
@@ -42,7 +39,7 @@ const Facet_Rating = ({ data, category, updater }) => {
           },
      ]);
 
-     useEffect(() => {
+     React.useEffect(() => {
           setIsLoading(false);
           let initialValue = '';
           if (_.find(data, ['isApplied', true])) {
@@ -94,5 +91,3 @@ const Facet_Rating = ({ data, category, updater }) => {
           </ScrollView>
      );
 };
-
-export default Facet_Rating;

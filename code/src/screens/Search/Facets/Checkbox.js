@@ -1,8 +1,8 @@
-import { Checkbox, HStack, Pressable, Text } from 'native-base';
+import { Checkbox, HStack, Text } from 'native-base';
 import React from 'react';
-import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../../util/logging.js';
+import { logDebugMessage } from '../../../util/logging.js';
 
-const Facet_Checkbox = ({ data, category, values = [], updateCheckboxFacet }) => {
+export const Facet_Checkbox = ({ data, category, values = [], updateCheckboxFacet }) => {
      const isChecked = values.includes(data.value);
      const handleChange = (newValue) => {
           logDebugMessage("Clicked on " + data.value + " isChecked is " + isChecked + " newValue is " + newValue);
@@ -29,5 +29,3 @@ const Facet_Checkbox = ({ data, category, values = [], updateCheckboxFacet }) =>
           </HStack>
      );
 };
-
-export default Facet_Checkbox;

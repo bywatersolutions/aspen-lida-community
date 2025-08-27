@@ -5,7 +5,7 @@ import { Box, Button, FormControl, HStack, Text, useColorModeValue, useToken } f
 import React from 'react';
 import { ScrollView } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { LanguageContext, LibrarySystemContext, UserContext } from '../../../context/initialContext';
+import { LanguageContext } from '../../../context/initialContext';
 import { getTermFromDictionary } from '../../../translations/TranslationService';
 import { addAppliedFilter } from '../../../util/search';
 
@@ -13,8 +13,6 @@ import { addAppliedFilter } from '../../../util/search';
 
 export const Facet_Date = (props) => {
      const { data, category, updater } = props;
-     const { library } = React.useContext(LibrarySystemContext);
-     const { user, updateUser } = React.useContext(UserContext);
      const { language } = React.useContext(LanguageContext);
 
      const [loading, setLoading] = React.useState(false);

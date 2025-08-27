@@ -1,21 +1,19 @@
 import _ from 'lodash';
 import { Box, FormControl, HStack, Input } from 'native-base';
-import React, { useState, useEffect, useContext } from 'react';
+import React from 'react';
 import { ScrollView } from 'react-native';
 
 // custom components and helper files
 import { LoadingSpinner } from '../../../components/loadingSpinner';
-import { userContext } from '../../../context/user';
 import { getTermFromDictionary } from '../../../translations/TranslationService';
 import { addAppliedFilter } from '../../../util/search';
 
-const Facet_Slider = ({ data, category, updater, language }) => {
-     const user = useContext(userContext);
-     const [isLoading, setIsLoading] = useState(true);
-     const [startValue, setStartValue] = useState('*');
-     const [endValue, setEndValue] = useState('*');
+export const Facet_Slider = ({ data, category, updater, language }) => {
+     const [isLoading, setIsLoading] = React.useState(true);
+     const [startValue, setStartValue] = React.useState('*');
+     const [endValue, setEndValue] = React.useState('*');
 
-     useEffect(() => {
+     React.useEffect(() => {
           appliedStartValue();
           appliedEndValue();
           setIsLoading(false);
@@ -106,5 +104,3 @@ const Facet_Slider = ({ data, category, updater, language }) => {
           </ScrollView>
      );
 };
-
-export default Facet_Slider;

@@ -1,23 +1,21 @@
 import _ from 'lodash';
 import moment from 'moment';
 import { Box, Button, Container, FormControl, HStack, Input, Text } from 'native-base';
-import React, { useState, useEffect, useContext } from 'react';
+import React from 'react';
 import { ScrollView } from 'react-native';
 
 // custom components and helper files
 import { LoadingSpinner } from '../../../components/loadingSpinner';
-import { userContext } from '../../../context/user';
 import { getTermFromDictionary } from '../../../translations/TranslationService';
 import { addAppliedFilter } from '../../../util/search';
 
-const Facet_Year = ({ data, category, updater, language }) => {
-     const user = useContext(userContext);
-     const [isLoading, setIsLoading] = useState(true);
-     const [yearFrom, setYearFrom] = useState('');
-     const [yearTo, setYearTo] = useState('');
-     const [value, setValue] = useState('');
+export const Facet_Year = ({ data, category, updater, language }) => {
+     const [isLoading, setIsLoading] = React.useState(true);
+     const [yearFrom, setYearFrom] = React.useState('');
+     const [yearTo, setYearTo] = React.useState('');
+     const [value, setValue] = React.useState('');
 
-     useEffect(() => {
+     React.useEffect(() => {
           setIsLoading(false);
      }, []);
 
@@ -112,5 +110,3 @@ const Facet_Year = ({ data, category, updater, language }) => {
           </ScrollView>
      );
 };
-
-export default Facet_Year;

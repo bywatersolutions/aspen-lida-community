@@ -1,48 +1,36 @@
 import _ from 'lodash';
 import { Box, Button, Center, Checkbox, ChevronLeftIcon, Input, Pressable, View } from 'native-base';
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React from 'react';
 
 // custom components and helper files
 import { ScrollView } from 'react-native';
 
 import { LoadingSpinner } from '../../components/loadingSpinner';
-import { userContext } from '../../context/user';
 import { getTermFromDictionary } from '../../translations/TranslationService';
 import { LIBRARY } from '../../util/loadLibrary';
 import { addAppliedFilter, buildParamsForUrl, removeAppliedFilter, SEARCH, searchAvailableFacets } from '../../util/search';
-import Facet_Checkbox from './Facets/Checkbox';
+import { Facet_Checkbox } from './Facets/Checkbox';
 import { Facet_Date } from './Facets/Date';
-import Facet_RadioGroup from './Facets/RadioGroup';
-import Facet_Rating from './Facets/Rating';
-import Facet_Slider from './Facets/Slider';
-import Facet_Year from './Facets/Year';
+import { Facet_RadioGroup } from './Facets/RadioGroup';
+import { Facet_Rating } from './Facets/Rating';
+import { Facet_Slider } from './Facets/Slider';
+import { Facet_Year } from './Facets/Year';
 import { UnsavedChangesExit } from './UnsavedChanges';
-import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../util/logging.js';
+import { logDebugMessage } from '../../util/logging.js';
 
 const Facet = ({ route, navigation }) => {
-     const user = useContext(userContext);
-     const _isMounted = useRef(false);
-
-     const [isLoading, setIsLoading] = useState(true);
-     const [term] = useState(route.params?.term);
-     const [data] = useState(route.params?.data ?? []);
-     const [title] = useState(route.params?.extra['label'] ?? 'Filter');
-     const [facets, setFacets] = useState(route.params?.facets ?? []);
-     const [facetsOriginal] = useState(route.params?.facets ?? []);
-     const [numFacets, setNumFacets] = useState(0);
-     const [category] = useState(route.params?.extra['field'] ?? '');
-     const [applied, setApplied] = useState([]);
-     const [multiSelect] = useState(Boolean(route.params?.extra['multiSelect']));
-     const [pendingFilters] = useState(SEARCH.pendingFilters);
-     const [filterByQuery, setFilterByQuery] = useState('');
-     const [hasPendingChanges, setHasPendingChanges] = useState(false);
-     const [showWarning, setShowWarning] = useState(false);
-     const [isUpdating, setIsUpdating] = useState(false);
-     const [resetOptions, setResetOptions] = useState(false);
-     const [values, setValues] = useState([]);
-     const [pending, setPending] = useState([]);
-     const [valuesDefault, setValuesDefault] = useState([]);
-     const [language] = useState(route.params?.language ?? 'en');
+     const _isMounted = React.useRef(false);
+     const [isLoading, setIsLoading] = React.useState(true);
+     const [title] = React.useState(route.params?.extra['label'] ?? 'Filter');
+     const [facets, setFacets] = React.useState(route.params?.facets ?? []);
+     const [numFacets, setNumFacets] = React.useState(0);
+     const [category] = React.useState(route.params?.extra['field'] ?? '');
+     const [multiSelect] = React.useState(Boolean(route.params?.extra['multiSelect']));
+     const [filterByQuery, setFilterByQuery] = React.useState('');
+     const [isUpdating, setIsUpdating] = React.useState(false);
+     const [values, setValues] = React.useState([]);
+     const [valuesDefault, setValuesDefault] = React.useState([]);
+     const [language] = React.useState(route.params?.language ?? 'en');
 
      const preselectValues = () => {
           let newValues = [];
@@ -63,7 +51,7 @@ const Facet = ({ route, navigation }) => {
           setValuesDefault(newValues);
      };
 
-     useEffect(() => {
+     React.useEffect(() => {
           _isMounted.current = true;
 
           const initData = async () => {
@@ -84,7 +72,7 @@ const Facet = ({ route, navigation }) => {
           };
      }, []);
 
-     useEffect(() => {
+     React.useEffect(() => {
           const routes = navigation.getState()?.routes;
           const prevRoute = routes[routes.length - 2];
           if (prevRoute) {
