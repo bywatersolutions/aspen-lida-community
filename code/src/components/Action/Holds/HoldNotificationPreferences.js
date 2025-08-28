@@ -32,7 +32,6 @@ export const HoldNotificationPreferences = (props) => {
                     <FormControl mb="$2">
                          <Checkbox
                               size="sm"
-                              value={emailNotification}
                               name="emailNotification"
                               defaultIsChecked={emailNotification}
                               onChange={(value) => {

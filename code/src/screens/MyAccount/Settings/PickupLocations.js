@@ -247,8 +247,7 @@ export const Settings_PickupLocations = () => {
 				<FormControl mb="$3">
 					<Checkbox
 						size="sm"
-						value={rememberPickupLocation}
-                              name="rememberHoldPickupLocation"
+						name="rememberHoldPickupLocation"
 						defaultIsChecked={rememberPickupLocation}
 						onChange={(value) => {
 							setRememberPickupLocation(value);
