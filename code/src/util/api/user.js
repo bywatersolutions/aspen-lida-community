@@ -1359,3 +1359,301 @@ export async function updateScreenBrightnessStatus(status, url, language = 'en')
           return false;
      }
 }
+
+/** *******************************************************************
+ * 
+ ******************************************************************* **/
+/**
+ *
+ * 
+/**
+ * Return a list of  for a user
+ * @param {string} url
+ * @param {string} language
+ * @param {string} filter
+ * @param {number} page
+ * @param {number} pageSize
+ * 
+ **/
+export async function fetchCampaigns(page = 1, pageSize = 20, filter = 'enrolled', url, language = 'en') {
+     const postBody = await postData();
+
+     const api = create({
+          baseURL: url + '/API',
+          header: getHeaders(true),
+          auth: createAuthTokens(),
+          params: {
+              page: page,
+              pageSize: pageSize,
+              filter: filter,
+              language,
+          },
+     });
+
+     const response = await api.post('/UserAPI?method=getUserCampaigns', postBody);
+     let data = [];
+     let morePages = false;
+
+     if (response.ok) {
+          data = response.data;
+          if (data.result?.page_current !== data.result?.page_total) {
+               morePages = true;
+          }
+     } else {
+          console.error("ERROR fetching campaigns: ", response);
+     }
+
+     return {
+         campaigns: data.result?.campaigns ?? [],
+         totalResults: data.result?.totalResults ?? 0,
+         totalPages: data.result?.page_total ??0,
+         hasMore: morePages,
+         filter: data.result?.filter ?? 'enrolled',
+         message: data.data?.message ?? null,
+     }
+
+};
+
+/**
+ * Enroll in campaign
+ * @param {string} campaignId 
+ * @param {string} linkedUserId 
+ * @param {string} url 
+ * @param {string} language
+ * @returns 
+ */
+export async function enrollCampaign(campaignId, linkedUserId, filter = 'enrolled', url, language = 'en'){
+     const postBody = await postData();
+     const api = create({
+          baseURL: url + '/API',
+          header: getHeaders(true),
+          auth: createAuthTokens(),
+          params: {
+               campaignId: campaignId,
+               filter: filter,
+               linkedUserId: linkedUserId,
+               language
+          },
+     });
+
+     const response = await api.post('/UserAPI?method=enrollUserInCampaign', postBody);
+     let data = [];
+
+     if (response.ok) {
+          data = response.data;
+          if (data.result && data.result.success) {
+               return true;
+          } else {
+               console.error('Failed to enroll in campaign: ', data.message);
+               return false;
+          }
+     } else {
+          console.error(response);
+          return false;
+     } 
+}
+
+/**
+ *Unenroll from campaign
+ * @param {string} campaignId 
+ * @param {string} linkedUserId 
+ * @param {string} url 
+ * @param {string} language * 
+ * @returns 
+ */
+export async function unenrollCampaign(campaignId, linkedUserId, filter = 'enrolled', url, language = 'en'){
+     const postBody = await postData();
+     const api = create({
+          baseURL: url + '/API',
+          header: getHeaders(true),
+          auth: createAuthTokens(),
+          params: {
+               campaignId: campaignId,
+               filter: filter,
+               linkedUserId: linkedUserId,
+               language
+          },
+     });
+
+     const response = await api.post('/UserAPI?method=unenrollUserFromCampaign', postBody);
+     let data = [];
+
+     if (response.ok) {
+          data = response.data;
+          if (data.result && data.result.success) {
+               return true;
+          } else {
+               console.error('Failed to unenroll from campaign: ', data.message);
+               return false;
+          }
+     } else {
+          console.error(response);
+          return false;
+     } 
+}
+
+/**
+ * Opt into campaign emails
+ * @param {string} campaignId 
+ * @param {string} linkedUserId 
+ * @param {string} url 
+ * @param {string} language
+ * @param {boolean} optIn
+ * @returns 
+ */
+export async function optIntoCampaignEmails(campaignId, linkedUserId, filter = 'enrolled', optIn, url, language = 'en'){
+     const postBody = await postData();
+     const api = create({
+          baseURL: url + '/API',
+          header: getHeaders(true),
+          auth: createAuthTokens(),
+          params: {
+               campaignId: campaignId,
+               linkedUserId: linkedUserId,
+               filter: filter,
+               optIn,
+               language
+          },
+     });
+
+     const response = await api.post('/UserAPI?method=optUserIntoCampaignEmails', postBody, {params: {
+          campaignId, linkedUserId, filter, optIn, language,
+     }});
+     let data = [];
+
+     if (response.ok) {
+          data = response.data;
+          if (data.result && data.result.success) {
+               return true;
+          } else {
+               console.error('Failed to opt user into campaign emails: ', data.message);
+
+               return false;
+          }
+     } else {
+          console.error(response);
+          return false;
+     } 
+}
+
+/**
+ * Opt out of Campaign Leaderboard
+ * @param {string} campaignId 
+ * @param {string} linkedUserId 
+ * @param {string} url 
+ * @param {string} language
+ * @returns 
+ */
+export async function optUserInToCampaignLeaderboard(campaignId, linkedUserId, filter = 'enrolled', url, language = 'en'){
+     const postBody = await postData();
+     const api = create({
+          baseURL: url + '/API',
+          header: getHeaders(true),
+          auth: createAuthTokens(),
+          params: {
+               campaignId: campaignId,
+               filter: filter,
+               linkedUserId: linkedUserId,
+               language
+          },
+     });
+
+     const response = await api.post('/UserAPI?method=enrollUserInCampaignLeaderboard', postBody);
+     let data = [];
+
+     if (response.ok) {
+          data = response.data;
+          if (data.result && data.result.success) {
+               return true;
+          } else {
+               console.error('Failed to enroll in campaign: ', data.message);
+               return false;
+          }
+     } else {
+          console.error(response);
+          return false;
+     } 
+}
+
+/**
+ * Opt into Campaign Leaderboard
+ * @param {string} campaignId 
+ * @param {string} linkedUserId 
+ * @param {string} url 
+ * @param {string} language
+ * @returns 
+ */
+export async function optUserOutOfCampaignLeaderboard(campaignId, linkedUserId, filter = 'enrolled', url, language = 'en'){
+     const postBody = await postData();
+     const api = create({
+          baseURL: url + '/API',
+          header: getHeaders(true),
+          auth: createAuthTokens(),
+          params: {
+               campaignId: campaignId,
+               filter: filter,
+               linkedUserId: linkedUserId,
+               language
+          },
+     });
+
+     const response = await api.post('/UserAPI?method=unenrollUserFromCampaignLeaderboard', postBody);
+     let data = [];
+
+     if (response.ok) {
+          data = response.data;
+          if (data.result && data.result.success) {
+               return true;
+          } else {
+               console.error('Failed to enroll in campaign: ', data.message);
+               return false;
+          }
+     } else {
+          console.error(response);
+          return false;
+     } 
+}
+
+/**
+ * Add Progress to Activity (Milestone or Extra Credit)
+ * @param {string} activityId 
+ * @param {string} linkedUserId 
+ * @param {string} activityType - 'milestone' or 'extraCredit'
+ * @param {string} filter 
+ * @param {string} url 
+ * @param {string} language
+ * @returns 
+ */
+export async function addActivityProgress(activityId, linkedUserId, activityType, filter = 'enrolled', url, language = 'en', campaignId){
+     const postBody = await postData();
+     const api = create({
+          baseURL: url + '/API',
+          header: getHeaders(true),
+          auth: createAuthTokens(),
+          params: {
+               activityId: activityId,
+               activityType: activityType,
+               filter: filter,
+               linkedUserId: linkedUserId,
+               language,
+               campaignId
+          },
+     });
+
+     const response = await api.post('/UserAPI?method=addActivityProgress', postBody);
+     let data = [];
+
+     if (response.ok) {
+          data = response.data;
+          if (data.result && data.result.success) {
+               return true;
+          } else {
+               console.error('Failed to add progress: ', data.message);
+               return false;
+          }
+     } else {
+          console.error(response);
+          return false;
+     } 
+}
+
