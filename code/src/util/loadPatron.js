@@ -53,62 +53,6 @@ export async function getILSMessages(url) {
      return await api.post('/UserAPI?method=getILSMessages', postBody);
 }
 
-export async function reloadHolds(url) {
-     let response;
-     const postBody = await postData();
-     const api = create({
-          baseURL: url + '/API',
-          timeout: GLOBALS.timeoutSlow,
-          headers: getHeaders(true),
-          params: {
-               source: 'all',
-               linkedUsers: true,
-               refreshHolds: true,
-          },
-          auth: createAuthTokens(),
-     });
-     response = await api.post('/UserAPI?method=getPatronHolds', postBody);
-     if (response.ok) {
-          const allHolds = response.data.result.holds;
-          let holds;
-          let holdsReady = [];
-          let holdsNotReady = [];
-
-          if (typeof allHolds !== 'undefined') {
-               if (typeof allHolds.unavailable !== 'undefined') {
-                    holdsNotReady = Object.values(allHolds.unavailable);
-               }
-
-               if (typeof allHolds.available !== 'undefined') {
-                    holdsReady = Object.values(allHolds.available);
-               }
-          }
-
-          holds = holdsReady.concat(holdsNotReady);
-          PATRON.holds = holds;
-
-          return [
-               {
-                    title: 'Ready',
-                    data: holdsReady,
-               },
-               {
-                    title: 'Pending',
-                    data: holdsNotReady,
-               }
-          ]
-     } else {
-          const error = getErrorMessage({ statusCode: response.status, problem: response.problem, sendToSentry: true });
-          popToast(error.title, error.message, 'error');
-          logErrorMessage(response);
-          return {
-               holds: [],
-               holdsReady: [],
-               holdsNotReady: [],
-          };
-     }
-}
-
 export async function getBrowseCategoryListForUser(url = null) {
      const postBody = await postData();
      let baseUrl = url ?? LIBRARY.url;

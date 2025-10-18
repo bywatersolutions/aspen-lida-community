@@ -331,15 +331,7 @@ export async function getItemDetails(url, id, format) {
                format,
           },
      });
-     const response = await api.post('/ItemAPI?method=getItemDetails', postBody);
-     if (response.ok) {
-          return response.data;
-     } else {
-          const error = getErrorMessage({ statusCode: response.status, problem: response.problem, sendToSentry: true });
-          popToast(error.title, error.message, 'error');
-          logErrorMessage("No server connection while getting Item Details");
-          logErrorMessage(response);
-     }
+     return await api.post('/ItemAPI?method=getItemDetails', postBody);
 }
 
 export async function submitVdxRequest(url, request) {
