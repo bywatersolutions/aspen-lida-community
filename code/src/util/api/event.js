@@ -73,16 +73,7 @@ export async function getEventDetails(id, source, language, url) {
                language,
           },
      });
-     const response = await api.post('/EventAPI?method=getEventDetails', postBody);
-
-     if(response.ok) {
-          return response.data
-     } else {
-          const error = getErrorMessage({ statusCode: response.status, problem: response.problem, sendToSentry: true });
-          popToast(error.title, error.message, 'error');
-          logErrorMessage(response);
-          return [];
-     }
+     return await api.post('/EventAPI?method=getEventDetails', postBody);
 }
 
 /**
