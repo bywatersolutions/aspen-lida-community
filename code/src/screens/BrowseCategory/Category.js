@@ -116,6 +116,8 @@ const DisplayBrowseCategory = ({category}) => {
 const DisplayBrowseCategoryTitle = ({category, textId, source}) => {
      const { colorMode, theme } = React.useContext(ThemeContext);
 
+     const isSystemCategory = textId === 'system_user_lists' || textId === 'system_saved_searches' || textId === 'system_recommended_for_you';
+
      const onPressCategory = (label, key, source) => {
           let screen = 'SearchByCategory';
           if (source === 'List') {
@@ -129,6 +131,27 @@ const DisplayBrowseCategoryTitle = ({category, textId, source}) => {
                id: key,
           });
      };
+
+     if(isSystemCategory) {
+          return (
+               <Box maxWidth="80%">
+                    <Text
+                         color={colorMode === 'light' ? theme['colors']['gray']['800'] : theme['colors']['coolGray']['200']}
+                         bold
+                         mb="$1"
+                         sx={{
+                              '@base': {
+                                   fontSize: 18,
+                              },
+                              '@lg': {
+                                   fontSize: 24,
+                              },
+                         }}>
+                         {category}
+                    </Text>
+               </Box>
+          )
+     }
 
      return (
           <Pressable maxWidth="80%" onPress={() => onPressCategory(category, textId, source)}>
