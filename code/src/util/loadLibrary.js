@@ -210,7 +210,10 @@ export function formatDiscoveryVersion(payload) {
      return payload;
 }
 
-export async function reloadBrowseCategories(maxCat, url = null) {
+/**
+ * Fetch home screen feed items for the library
+ **/
+export async function getHomeScreenFeed(maxCat = 5, url = null) {
      let maxCategories = maxCat ?? 5;
      const postBody = await postData();
      let discovery;
@@ -237,5 +240,5 @@ export async function reloadBrowseCategories(maxCat, url = null) {
                },
           });
      }
-     return await discovery.post('/SearchAPI?method=getBrowseCategories', postBody);
+     return await discovery.post('/SearchAPI?method=getHomeScreenFeed', postBody);
 }

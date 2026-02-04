@@ -76,6 +76,8 @@ export const LibrarySystemContext = React.createContext({
      updateCatalogStatus: () => {},
      updateCatalogStatusMessage: () => {},
      updateMenu: () => {},
+     updateHomeScreenLinks: () => {},
+     homeScreenLinks: [],
      resetLibrary: () => {},
 });
 export const LibraryBranchContext = React.createContext({
@@ -231,6 +233,7 @@ export const LibrarySystemProvider = ({ children }) => {
      const [menu, setMenu] = useState();
      const [catalogStatus, setCatalogStatus] = useState();
      const [catalogStatusMessage, setCatalogStatusMessage] = useState();
+     const [homeScreenLinks, setHomeScreenLinks] = useState();
 
      const updateLibrary = (data) => {
           if (!_.isUndefined(data.discoveryVersion)) {
@@ -253,6 +256,11 @@ export const LibrarySystemProvider = ({ children }) => {
           logDebugMessage('updated LibrarySystemContext');
      };
 
+     const updateHomeScreenLinks = (data) => {
+          setHomeScreenLinks(data);
+          logDebugMessage('updated home screen links in LibrarySystemContext');
+     }
+
      const resetLibrary = () => {
           setLibrary({});
           setVersion({});
@@ -260,6 +268,7 @@ export const LibrarySystemProvider = ({ children }) => {
           setMenu({});
           setCatalogStatus(0);
           setCatalogStatusMessage('');
+          setHomeScreenLinks([]);
           logDebugMessage('reset LibrarySystemContext');
      };
 
@@ -299,6 +308,8 @@ export const LibrarySystemProvider = ({ children }) => {
                     catalogStatus,
                     catalogStatusMessage,
                     updateCatalogStatus,
+                    homeScreenLinks,
+                    updateHomeScreenLinks,
                }}>
                {children}
           </LibrarySystemContext.Provider>
