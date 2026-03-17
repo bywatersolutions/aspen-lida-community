@@ -1,0 +1,15 @@
+{
+  "name": "Aspen LiDA",
+  "slug": "aspen-lida",
+  "easId": "00fac777-6f41-4eda-a514-81c7bebb7ce9",
+  "reverseDns": "org.aspendiscovery.mobile",
+  "discoveryUrl": "https://aspen-model.bywatersolutions.com/",
+  "greenhouseUrl": "https://greenhouse.aspendiscovery.org/",
+  "libraryId": "5",
+  "themeId": "1",
+  "background": "#333D42",
+  "sentryProject": "aspen-discovery",
+  "sentryDsn": "https://7fe05c932e2b4fd7b93fa3a0acae0649@o994439.ingest.sentry.io/5952947",
+  "ascAppId": "1581124727",
+  "logLevel": "0"
+}
