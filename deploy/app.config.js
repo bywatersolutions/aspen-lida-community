@@ -89,7 +89,7 @@ module.exports = () => {
          owner: "bywater-solutions",
          platforms: ['ios', 'android'],
          version: version['version'],
-         newArchEnabled: false,
+         newArchEnabled: true,
          userInterfaceStyle: 'automatic',
          orientation: 'default',
          icon: generated('appIcon.png'),
