@@ -188,7 +188,8 @@ jobs:
       - name: 📱 Build App for ${{ matrix.platform }}
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          SENTRY_DISABLE_AUTO_UPLOAD=true npx eas-cli build --platform ${{ matrix.platform }} --profile production --local --non-interactive --output=${{ matrix.platform == 'ios' && './app-prod.ipa' || './app-prod.aab' }}
+          export GRADLE_OPTS="-XX:MetaspaceSize=512m -XX:MaxMetaspaceSize=1024m"
+          npx eas-cli build --platform ${{ matrix.platform }} --profile production --local --non-interactive --output=${{ matrix.platform == 'ios' && './app-prod.ipa' || './app-prod.aab' }}
         env:
           NODE_ENV: production
         working-directory: ./code
